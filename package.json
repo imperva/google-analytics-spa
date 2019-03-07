@@ -1,0 +1,46 @@
+{
+  "name": "@imperva/google-analytics",
+  "version": "0.0.1",
+  "description": "",
+  "main": "lib/google-analytics.min.js",
+  "scripts": {
+    "start": "npm run-script build:dev",
+    "build": "node build.js build --devMode false --autoReload false --extract-css-chunks false --coverage true --bundle-analyzer true && npm run badges",
+    "build:maps": "export WITH_MAPS=true && npm run build",
+    "build:dev": "node build.js build --devMode true --autoReload true --extract-css-chunks false --proxy false --run-tests false",
+    "bundle-report": "webpack-bundle-analyzer --port 4200 lib/stats.json",
+    "test": "./node_modules/jest/bin/jest.js --coverage=true --config=./node_modules/vulcan/confs/jest.js",
+    "badges": "jest-coverage-badges --input '.vulcan/tests/coverage/coverage-summary.json' --output 'badges'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab:engineering/react-components/google-analytics"
+  },
+  "publishConfig": {
+    "registry": "http://il-mavenrep-lp1:8080/artifactory/api/npm/npm-local"
+  },
+  "author": "Michael Rodov",
+  "license": "ISC",
+  "peerDependencies": {
+    "prop-types": "^15.6.2",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.3.0",
+    "@imperva/base": "^2.0.13",
+    "@imperva/buttons": "^2.0.5",
+    "@imperva/vulcan": "^1.0.1",
+    "babel-eslint": "^10.0.1",
+    "core-js": "2.5.7",
+    "enzyme": "3.4.4",
+    "enzyme-adapter-react-16": "1.2.0",
+    "jest-coverage-badges": "^1.1.2",
+    "peer-deps-externals-webpack-plugin": "^1.0.4",
+    "prop-types": "15.6.2",
+    "react": "16.4.2",
+    "react-dom": "16.4.2",
+    "react-test-renderer": "16.4.2",
+    "webpack-bundle-analyzer": "^3.0.3"
+  }
+}

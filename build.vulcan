@@ -1,0 +1,67 @@
+/* eslint-disable no-param-reassign,no-shadow,no-unused-vars */
+const pckg    = require( './package.json' );
+// eslint-disable-next-line no-unused-vars
+const path = require( 'path' );
+const PeerDepsExternalsPlugin = require( 'peer-deps-externals-webpack-plugin' );
+
+function filterOutScopeName( name ) {
+  return name.replace( /^@.*\//, '' );
+}
+
+function accessLoaders( config, loader ) {
+  const loaders = config.module.rules.reduce( ( acc, cur, i ) => {
+    cur.use.reduce( ( acc, cur, j ) => {
+      acc[ cur.loader ] = cur;
+      return acc;
+    }, acc );
+
+    return acc;
+  }, {} );
+
+  return loaders[ loader ];
+}
+
+module.exports = ( vulcan ) => {
+  const config = {
+    paths: {
+      src: './src',
+    },
+  };
+
+  if ( !vulcan.cli.devMode ) {
+    vulcan.bundles.set( {
+      output: `${filterOutScopeName( pckg.name )}.min`,
+      chunks: [ './js/index.js' ],
+    } );
+    config.beforeBuild = ( ( webpackConfig ) => {
+      webpackConfig.plugins.push( new PeerDepsExternalsPlugin() );
+      accessLoaders( webpackConfig, 'babel-loader' ).options.plugins.push( [ '@babel/plugin-proposal-decorators', { legacy: true } ] );
+
+      Object.assign( webpackConfig.output, {
+        filename: '[name].js',
+
+        libraryTarget: 'umd',
+
+        library: `${pckg.name}`,
+      } );
+      if ( process.env.WITH_MAPS === 'true' ) {
+        webpackConfig.devtool = 'eval-source-map';
+      }
+    } );
+  }
+  else {
+    vulcan.bundles.set( {
+      output: './bundle',
+      chunks: [ './js/demo-root.jsx' ],
+    } );
+    config.beforeBuild = ( ( webpackConfig ) => {
+      accessLoaders( webpackConfig, 'babel-loader' ).options.plugins.push( [ '@babel/plugin-proposal-decorators', { legacy: true } ] );
+      Object.assign( webpackConfig.output, {
+        filename: 'bundle.js',
+      } );
+    } );
+  }
+
+  return config;
+};
+
