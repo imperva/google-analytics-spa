@@ -6,7 +6,7 @@ import { tracker } from './GoogleAnalytics';
  * As most of the application actions are done via redux we will capture most of them here
  * Actions that need to be reported must have an object called ga present
  */
-export const gaReportingMiddleware = store => next => ( action ) => {
+const GaReportingReduxMiddleware = store => next => ( action ) => {
   const nextState = next( action ); // reduce state to the next stage
 
   if ( action.ga ) {
@@ -14,3 +14,5 @@ export const gaReportingMiddleware = store => next => ( action ) => {
   }
   return nextState;
 };
+
+export default GaReportingReduxMiddleware;
