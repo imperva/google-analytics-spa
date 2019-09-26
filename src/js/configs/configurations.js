@@ -32,6 +32,9 @@ export default {
       SPEED_GET_ON_PREM_STATUS:          'SPEED_GET_ON_PREM_STATUS',
       SPEED_SET_ON_PREM_STATUS:          'SPEED_SET_ON_PREM_STATUS',
       SPEED_FETCH_INSIGHTS:              'SPEED_FETCH_INSIGHTS',
+      DEFAULT_DOWNLOAD_TIME:             'DOWNLOAD_TIME',
+      DEFAULT_WAITING_TIME:              'SERVER_WAITING_TIME',
+      DEFAULT_DURATION_TIME:             'DURATION_TIME',
     },
     actions: {
       HOVER_SAMPLE_EVENTS_TABLE:                 'HOVER_SAMPLE_EVENTS_TABLE',

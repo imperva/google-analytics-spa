@@ -18,3 +18,4 @@ function extractAccountId( locationSearch ) {
 export function getAccountId() {
   extractAccountId( location.search );
 }
+

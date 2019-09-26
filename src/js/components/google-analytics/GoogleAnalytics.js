@@ -20,7 +20,7 @@ function getEnteriesByName( name, type ) {
   return perf.filter( p => !!p.name.match( name ) );
 }
 
-function getLastEntryByName( name, type ) {
+function getLastPerformanceEntryByName( name, type ) {
   try {
     const perfs = window.performance.getEntriesByName( name, type );
     if ( !!perfs && perfs.length > 0 ) {
@@ -34,9 +34,49 @@ function getLastEntryByName( name, type ) {
   return null;
 }
 
+function sendDownloadTime( trackerName, entry, category, label = '' ) {
+  ga( `${trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
+  ga( `${trackerName}.send`, {
+    hitType:        'timing',
+    timingCategory: category,
+    timingVar:      'download',
+    timingValue:    Math.ceil( entry.responseEnd - entry.responseStart ),
+    timingLabel:    label,
+    transport:      'beacon',
+  } );
+}
+
+function sendServerWaitingTime( trackerName, entry, category, label = '' ) {
+  ga( `${trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
+  ga( `${trackerName}.send`, {
+    hitType:        'timing',
+    timingCategory: category,
+    timingVar:      'wait',
+    timingValue:    Math.ceil( entry.responseStart - entry.requestStart ),
+    timingLabel:    label,
+    transport:      'beacon',
+  } );
+}
+
+function sendDurationTime( trackerName, entry, category, label = '' ) {
+  ga( `${trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
+  ga( `${trackerName}.send`, {
+    hitType:        'timing',
+    timingCategory: category,
+    timingVar:      'duration',
+    timingValue:    !entry.duration ? null : Math.ceil( entry.duration ),
+    timingLabel:    label,
+    transport:      'beacon',
+  } );
+}
+
 export class GaTracker {
 
   constructor( trackerId, trackerName, gaProperties = {} ) {
+    this.lastResource = 0;
+    this.lastMeasure = 0;
+    this.performanceFilterRegex = '';
+
     if ( !trackerId ) {
       throw new Error( 'Google Analytics tracker must receive an id! (pattern: UA-XXXXXX-xx)' +
                           '\nId can be located at your google analytics site: https://analytics.google.com' );
@@ -80,20 +120,9 @@ export class GaTracker {
    * @param label
    */
   reportAjaxDuration( category, name, label ) {
-    try {
-      const duration = getLastEntryByName( name, 'resource' ).duration;
-      ga( `${this.trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
-      ga( `${this.trackerName}.send`, {
-        hitType:        'timing',
-        timingCategory: category,
-        timingVar:      'duration',
-        timingValue:    !duration ? null : Math.ceil( duration ),
-        timingLabel:    label,
-        transport:      'beacon',
-      } );
-    }
-    catch ( e ) {
-
+    const entry = getLastPerformanceEntryByName( name, 'resource' );
+    if ( !Utils.isEmpty( entry ) ) {
+      sendDurationTime( this.trackerName, entry, category, label );
     }
   }
 
@@ -104,25 +133,13 @@ export class GaTracker {
    * @param label
    */
   reportAjaxWait( category, name, label ) {
-    try {
-      const entry = getLastEntryByName( name, 'resource' );
+    const entry = getLastPerformanceEntryByName( name, 'resource' );
 
-      if ( entry ) {
-        ga( `${this.trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
-        ga( `${this.trackerName}.send`, {
-          hitType:        'timing',
-          timingCategory: category,
-          timingVar:      'wait',
-          timingValue:    Math.ceil( entry.responseStart - entry.requestStart ),
-          timingLabel:    label,
-          transport:      'beacon',
-        } );
-      }
-    }
-    catch ( e ) {
-
+    if ( !Utils.isEmpty( entry ) ) {
+      sendServerWaitingTime( this.trackerName, entry, category, label );
     }
   }
+
 
   /**
    * Reports the resource download time
@@ -131,23 +148,9 @@ export class GaTracker {
    * @param label
    */
   reportAjaxDownload( category, name, label ) {
-    try {
-      const entry = getLastEntryByName( name, 'resource' );
-
-      if ( entry ) {
-        ga( `${this.trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
-        ga( `${this.trackerName}.send`, {
-          hitType:        'timing',
-          timingCategory: category,
-          timingVar:      'download',
-          timingValue:    Math.ceil( entry.responseEnd - entry.responseStart ),
-          timingLabel:    label,
-          transport:      'beacon',
-        } );
-      }
-    }
-    catch ( e ) {
-
+    const entry = getLastPerformanceEntryByName( name, 'resource' );
+    if ( !Utils.isEmpty( entry ) ) {
+      sendDownloadTime( this.trackerName, entry, category, label );
     }
   }
 
@@ -180,6 +183,31 @@ export class GaTracker {
     } );
   }
 
+  /** **
+   * This function is used to automatically bind your requests performance reports to google analytics
+   *
+   */
+  bindToRequestsPerformance( allowOnlyRegex ) {
+    if ( Utils.isEmpty( allowOnlyRegex ) ) {
+      // TODO by default filter only requests that are going to the specific ms server
+      this.performanceFilterRegex = allowOnlyRegex;
+    }
+    else {
+      this.performanceFilterRegex = allowOnlyRegex;
+    }
+    this.performanceObserver = new PerformanceObserver( ( list ) => {
+      list.getEntries()
+          .filter( entry => entry.name.match( this.performanceFilterRegex ) )
+          .forEach( ( entry ) => {
+            sendDownloadTime( this.trackerName, entry, Configs.ga.categories.DEFAULT_DOWNLOAD_TIME );
+            sendServerWaitingTime( this.trackerName, entry, Configs.ga.categories.DEFAULT_WAITING_TIME );
+            sendDurationTime( this.trackerName, entry, Configs.ga.categories.DEFAULT_DURATION_TIME );
+          } );
+    } );
+
+    this.performanceObserver.observe( { entryTypes: [ 'resource' ] } );
+  }
+
   reportPage( title, page = window.location.pathname ) {
     try {
       ga( `${this.trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
@@ -195,7 +223,7 @@ export class GaTracker {
     }
   }
 
-  reportAction( category, action, label, value ) {
+  reportAction( category, action, label = '', value ) {
     try {
       ga( `${this.trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
       ga( `${this.trackerName}.send`, {
@@ -227,9 +255,9 @@ export class GaTracker {
     }
   }
 
-  reportPageLoadTime( label ) {
+  reportTimeToFirstPaint( label = '' ) {
     try {
-      const timing = window.performance.timing;
+      const timing = window.performance.timeOrigin;
       const pageLoadTime = ( timing.loadEventStart - timing.navigationStart );
       ga( `${this.trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
       ga( `${this.trackerName}.send`, {
@@ -248,12 +276,13 @@ export class GaTracker {
 
 }
 
-export function googleAnalyticsInit( trackerId, trackerName, history ) {
+export function googleAnalyticsInit( trackerId, trackerName, history, performanceAllowOnlyRegex = null ) {
   try {
     tracker = new GaTracker( trackerId, trackerName );
     if ( history ) {
       tracker.bindToBrowserHistory( history );
     }
+    tracker.bindToRequestsPerformance( performanceAllowOnlyRegex );
   }
   catch ( e ) {
     console.error( 'failed to load google analytics. GA will not work', e );

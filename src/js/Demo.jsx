@@ -2,37 +2,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { TransparentButton } from '@imperva/buttons';
+import { CancelSimpleButton } from '@imperva/buttons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { tracker, googleAnalyticsInit } from './components/google-analytics/GoogleAnalytics';
 import './Demo.scss';
 
-googleAnalyticsInit( 'UA-17432465-11', 'some_tracker' );
+googleAnalyticsInit( 'UA-17432465-11',
+                     'some_tracker',
+                     null,
+                     /.*localhost.*/i );
 
-const Action = props => (
-  <React.Fragment key={props.id}>
-    <td>
-      <div className={'first-col'}>
-        <TransparentButton
-          icon={<FontAwesomeIcon icon={faPaperPlane} size="2x" style={{ color: 'green' }} />}
-          onClick={() => {
-            console.log( props.id );
-            props.onClick();
-          }}
-        />
-        <p style={{ marginLeft: '15px' }}>{props.id}</p>
-      </div>
-    </td>
-    <td>
-      <SyntaxHighlighter language="javascript">
-        {props.onClick.toString()
-                      .replace( '__WEBPACK_IMPORTED_MODULE_8__components_google_analytics_GoogleAnalytics__["b" /* tracker */]',
-                               'tracker' )}</SyntaxHighlighter>
-    </td>
-  </React.Fragment>
+const Rest = {
+  google: 'index.html',
+};
 
-);
+const Action = props => ( <React.Fragment key={props.id}>
+  <td>
+    <div className={'first-col'}>
+      <CancelSimpleButton
+        icon={<FontAwesomeIcon icon={faPaperPlane} size="2x" style={{ color: 'green' }} />}
+        onClick={() => {
+          console.log( props.id );
+          props.onClick();
+        }}
+      />
+      <p style={{ marginLeft: '15px' }}>{props.id}</p>
+    </div>
+  </td>
+  <td>
+    <SyntaxHighlighter language="javascript">
+      {props.onClick.toString()
+                  .replace( /__WEBPACK_.*tracker.*\./gi,
+                           'tracker.' )}</SyntaxHighlighter>
+  </td>
+</React.Fragment> );
 
 Action.propTypes = {
   id:      PropTypes.string.isRequired,
@@ -58,7 +62,19 @@ const Demo = () => (
         <tr>
           <Action
             id={'Report page load time'}
-            onClick={() => tracker.reportPageLoadTime( 'GA-DEMO' )}
+            onClick={() => tracker.reportTimeToFirstPaint( 'GA-DEMO' )}
+          />
+        </tr>
+        <tr>
+          <Action
+            id={'Send REST call and check console print'}
+            onClick={() => {
+              fetch( Rest.google )
+                            .then( ( response ) => {
+                              console.log( `response from google was received: ${response}` );
+                            } )
+                            .catch( error => console.error( error ) );
+            }}
           />
         </tr>
       </tbody>
