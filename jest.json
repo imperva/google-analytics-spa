@@ -1,0 +1,46 @@
+{
+  "globals": {
+    "__USE_MOCK__": true,
+    "__TEST__": true
+  },
+  "testURL": "http://localhost/",
+  "reporters": [
+    "default",
+    ["jest-junit", {"output": "./build/test-results/ui/test-results.xml"}]
+  ],
+  "transform": {
+    "^.*\\.(jsx?)$": "<rootDir>/node_modules/babel-jest"
+  },
+  "verbose": false,
+  "collectCoverage": true,
+  "coverageDirectory": "./build/test-coverage/ui",
+  "coverageReporters": [
+    "json-summary"
+  ],
+  "collectCoverageFrom": [
+    "**/js/components/**/*.{js,jsx}"
+  ],
+  "coveragePathIgnorePatterns": [
+    "<rootDir>/node_modules/",
+    ".*\\.s?css",
+    ".*\\.json",
+    "IncidentMockGenerator\\.js",
+    "ReduxActions\\.js",
+    "ReduxActionTypes\\.js",
+    "CountryDictionary\\.js",
+    "TestUtils\\.js",
+    "ReduxInitialState\\.js",
+    "NoData\\.jsx",
+    "LdsRingLoader\\.jsx"
+  ],
+  "modulePaths": [
+    "<rootDir>/client/src/js/components"
+  ],
+  "moduleNameMapper": {
+    "\\.(scss|css)$": "<rootDir>/client/src/__mocks__/styleMock.js",
+    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/client/src/__mocks__/fileMock.js"
+  },
+  "modulePathIgnorePatterns": [
+    "<rootDir>/src/style"
+  ]
+}

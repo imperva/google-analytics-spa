@@ -9,7 +9,7 @@
     "build:maps": "export WITH_MAPS=true && npm run build",
     "build:dev": "node build.js build --devMode true --autoReload true --extract-css-chunks false --proxy false --run-tests false",
     "bundle-report": "webpack-bundle-analyzer --port 4200 lib/stats.json",
-    "test": "./node_modules/jest/bin/jest.js --coverage=true --config=./node_modules/vulcan/confs/jest.js",
+    "test": "./node_modules/jest/bin/jest.js --coverage=true --config=./node_modules/@imperva/vulcan/confs/jest.js",
     "badges": "jest-coverage-badges --input '.vulcan/tests/coverage/coverage-summary.json' --output 'badges'"
   },
   "repository": {
@@ -28,7 +28,9 @@
     "@imperva/base": ">1.0.0"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-decorators": "^7.3.0",
+    "@babel/plugin-proposal-decorators": "^7.6.0",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-react": "^7.0.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.22",
     "@fortawesome/free-regular-svg-icons": "^5.10.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
@@ -36,9 +38,11 @@
     "@imperva/buttons": "^2.3.4",
     "@imperva/vulcan": "^1.0.1",
     "babel-eslint": "^10.0.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "core-js": "2.5.7",
     "enzyme": "3.4.4",
     "enzyme-adapter-react-16": "1.2.0",
+    "history": "^4.10.1",
     "jest-coverage-badges": "^1.1.2",
     "peer-deps-externals-webpack-plugin": "^1.0.4",
     "prop-types": "15.6.2",

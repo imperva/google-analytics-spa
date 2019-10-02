@@ -11,6 +11,17 @@ Automatically reports the "time to first paint", pages navigation and REST calls
 npm i @imperva/google-analytics 
 ```
 
+####In your index.html** add the following snippet 
+**or whatever is loaded first in your site
+```html
+    <!-- Google Analytics -->
+    <script>
+        window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    </script>
+    <script defer src='https://www.google-analytics.com/analytics.js'></script>
+    <!-- End Google Analytics -->
+```
+
 ## Usage Example
 
 ```jsx harmony

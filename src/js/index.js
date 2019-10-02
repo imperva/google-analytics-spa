@@ -1,9 +1,9 @@
-import { GaTracker, googleAnalyticsInit } from './components/google-analytics/GoogleAnalytics';
+import { tracker, googleAnalyticsInit } from './components/google-analytics/GoogleAnalytics';
 import reportGoogleAnalytics from './components/google-analytics/ReduxAnnotations';
 import GaReportingReduxMiddleware from './components/google-analytics/ReduxGaMiddleware';
 
-export default {
-  GaTracker,
+export {
+  tracker,
   googleAnalyticsInit,
   reportGoogleAnalytics,
   GaReportingReduxMiddleware,
