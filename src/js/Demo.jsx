@@ -61,8 +61,8 @@ const Demo = () => (
         </tr>
         <tr>
           <Action
-            id={'Report page load time'}
-            onClick={() => tracker.reportTimeToFirstPaint( 'GA-DEMO' )}
+            id={'Report something'}
+            onClick={() => {}}
           />
         </tr>
         <tr>

@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars,no-param-reassign */
 /**
- * Its possible to provide "category" field in preceding annotation, so you can mark the desired category field using annotation
- * so it would look like this:
+ * This annotation can be used when using ReduxGaMiddleware in order to mark redux action to automatically send an event to GA
+ *
+ * Usage:
  *          @reportGoogleAnalytics
- *              @myCategory
- *                  function xxx (.....
- * @param target
- * @param key
- * @param descriptor
+ *          function xxx (..... ) {
+ *              your code here
+ *          }
+
  */
 export default function reportGoogleAnalytics( target, key, descriptor ) {
   const origFunctionality = target[ key ];

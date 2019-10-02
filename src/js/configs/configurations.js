@@ -35,6 +35,7 @@ export default {
       DEFAULT_DOWNLOAD_TIME:             'DOWNLOAD_TIME',
       DEFAULT_WAITING_TIME:              'SERVER_WAITING_TIME',
       DEFAULT_DURATION_TIME:             'DURATION_TIME',
+      TIME_TO_FIRST_PAINT:               'TIME_TO_FIRST_PAINT',
     },
     actions: {
       HOVER_SAMPLE_EVENTS_TABLE:                 'HOVER_SAMPLE_EVENTS_TABLE',

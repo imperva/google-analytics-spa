@@ -70,6 +70,87 @@ function sendDurationTime( trackerName, entry, category, label = '' ) {
   } );
 }
 
+/**
+ * Private function that is used to process the time to first paint records and report it to GA
+ * @param trackerName
+ * @param list - list of performance events from performance api
+ * @param observer - the observer that calls this function - used mainly to disconnect from it after the first event was reported
+ */
+function sendFirstPaintEvent( trackerName, list, observer ) {
+  list.getEntries()
+      .filter( e => e.name === 'first-contentful-paint' )
+      .forEach( ( entry ) => {
+        ga( `${trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
+        ga( `${trackerName}.send`, {
+          hitType:        'timing',
+          timingCategory: Configs.ga.categories.TIME_TO_FIRST_PAINT,
+          timingVar:      'duration',
+          timingValue:    entry.startTime,
+          timingLabel:    '',
+          transport:      'beacon',
+        } );
+      } );
+
+  observer.disconnect(); // Once we sent the first "TIME_TO_FIRST_PAINT" event we no longer need to listen
+}
+
+/**
+ * Function that binds to paint events and will report the time to first paint
+ * This indication shows after how many millis the user saw the first meaningful indication that application was loaded
+ */
+function bindToFirstPaint( trackerName ) {
+  const performanceObserver = new PerformanceObserver( sendFirstPaintEvent.bind( this, trackerName ) );
+
+  performanceObserver.observe( { entryTypes: [ 'paint' ] } );
+}
+
+/**
+ * This function is used to automatically report performance of your REST calls to google analytics
+ * @param {string} allowOnlyRegex - Only requests whos URL matches this regex would be reported. Reports nothing if left empty;
+ */
+function bindToRequestsPerformance( allowOnlyRegex ) {
+  if ( Utils.isEmpty( allowOnlyRegex ) ) {
+    // TODO by default filter only requests that are going to the specific ms server
+    this.performanceFilterRegex = allowOnlyRegex;
+  }
+  else {
+    this.performanceFilterRegex = allowOnlyRegex;
+  }
+
+  this.performanceObserver = new PerformanceObserver( ( list ) => {
+    list.getEntries()
+        .filter( entry => entry.name.match( this.performanceFilterRegex ) )
+        .forEach( ( entry ) => {
+          sendDownloadTime( this.trackerName, entry, Configs.ga.categories.DEFAULT_DOWNLOAD_TIME );
+          sendServerWaitingTime( this.trackerName, entry, Configs.ga.categories.DEFAULT_WAITING_TIME );
+          sendDurationTime( this.trackerName, entry, Configs.ga.categories.DEFAULT_DURATION_TIME );
+        } );
+  } );
+
+  this.performanceObserver.observe( { entryTypes: [ 'resource' ] } );
+}
+
+/** *
+ * Function reports page views
+ * Although we are in SPA (single page application) we still use pages in order to better understanding the user application usage
+ * In order to achieve this we are using virtual pages.
+ * For example: when clicking in the dashboard on country 'china' we navigate to incidents list filtered by "china"
+ * we report navigation to: /incidents/country/china
+ * @param {Object} history
+ */
+function bindToBrowserHistory( history ) {
+  // eslint-disable-next-line no-unused-vars
+  history.listen( ( location, action ) => {
+    const virtualPath = Utils.isEmpty( location.state ) || Utils.isEmpty( location.state.virtualPath ) ? '' : location.state.virtualPath;
+    const pageTitle = Utils.isEmpty( location.state ) || Utils.isEmpty( location.state.title ) ? '' : location.state.title;
+    const combinedPath = Utils.isEmpty( location.state ) || Utils.isEmpty( location.state.isVirtualPathOnly ) || !location.state.isVirtualPathOnly
+        ? ( `${window.location.pathname}/${virtualPath}` ).replace( '//', '/' )
+        : virtualPath;
+
+    this.reportPage( pageTitle, combinedPath );
+  } );
+}
+
 export class GaTracker {
 
   constructor( trackerId, trackerName, gaProperties = {} ) {
@@ -107,7 +188,7 @@ export class GaTracker {
 
   /**
    * Sets user id inside the object and also inside the tracker
-   * @param identifier - identifier that is used to identify this specific user across multiple sessions and / or devices
+   * @param {string} identifier - identifier that is used to identify this specific user across multiple sessions and / or devices
    */
   setUserId( identifier ) {
     ga( `${this.trackerName}.set`, 'userId', identifier );
@@ -115,9 +196,9 @@ export class GaTracker {
 
   /**
    * Reports the whole durations of the request, from initiation to last byte receipt
-   * @param category
-   * @param name
-   * @param label
+   * @param {string} category
+   * @param {string} name
+   * @param {string} label
    */
   reportAjaxDuration( category, name, label ) {
     const entry = getLastPerformanceEntryByName( name, 'resource' );
@@ -128,9 +209,9 @@ export class GaTracker {
 
   /**
    * Reports the server waiting time until download starts
-   * @param category
-   * @param name
-   * @param label
+   * @param {string} category
+   * @param {string} name
+   * @param {string} label
    */
   reportAjaxWait( category, name, label ) {
     const entry = getLastPerformanceEntryByName( name, 'resource' );
@@ -140,12 +221,11 @@ export class GaTracker {
     }
   }
 
-
   /**
    * Reports the resource download time
-   * @param category
-   * @param name
-   * @param label
+   * @param {string} category
+   * @param {string} name
+   * @param {string} label
    */
   reportAjaxDownload( category, name, label ) {
     const entry = getLastPerformanceEntryByName( name, 'resource' );
@@ -154,60 +234,35 @@ export class GaTracker {
     }
   }
 
+  /**
+   * Wrapper for action report performed by human
+   * Automatically sets tha category to CATEGORY_HUMAN
+   * @param {Object} action - action performed
+   * @param {string} label - label of the action
+   * @param {number} value - value of hte action (in $)
+   */
   reportHumanAction( action, label, value ) {
     this.reportAction( Configs.ga.categories.CATEGORY_HUMAN, action, label, value );
   }
 
+  /**
+   * Wrapper for action report performed by the system
+   * Automatically sets tha category to CATEGORY_MACHINE
+   * @param {Object} action - action performed
+   * @param {string} label - label of the action
+   * @param {number} value - value of hte action (in $)
+   */
   reportMachineAction( action, label, value ) {
     this.reportAction( Configs.ga.categories.CATEGORY_MACHINE, action, label, value );
   }
 
-  /** *
-   * Function reports page views
-   * Although we are in SPA (single page application) we still use pages in order to better understanding the user application usage
-   * In order to achieve this we are using virtual pages.
-   * For example: when clicking in the dashboard on country 'china' we navigate to incidents list filtered by "china"
-   * we report navigation to: /incidents/country/china
-   * @param history
+
+  /**
+   * Reports page view
+   * Usually theres no need to report pages manually, since this feature is turned on automatically
+   * @param {string} title - reported page title
+   * @param {string} page - page url
    */
-  bindToBrowserHistory( history ) {
-    // eslint-disable-next-line no-unused-vars
-    history.listen( ( location, action ) => {
-      const virtualPath = Utils.isEmpty( location.state ) || Utils.isEmpty( location.state.virtualPath ) ? '' : location.state.virtualPath;
-      const pageTitle = Utils.isEmpty( location.state ) || Utils.isEmpty( location.state.title ) ? '' : location.state.title;
-      const combinedPath = Utils.isEmpty( location.state ) || Utils.isEmpty( location.state.isVirtualPathOnly ) || !location.state.isVirtualPathOnly
-          ? ( `${window.location.pathname}/${virtualPath}` ).replace( '//', '/' )
-          : virtualPath;
-
-      this.reportPage( pageTitle, combinedPath );
-    } );
-  }
-
-  /** **
-   * This function is used to automatically bind your requests performance reports to google analytics
-   *
-   */
-  bindToRequestsPerformance( allowOnlyRegex ) {
-    if ( Utils.isEmpty( allowOnlyRegex ) ) {
-      // TODO by default filter only requests that are going to the specific ms server
-      this.performanceFilterRegex = allowOnlyRegex;
-    }
-    else {
-      this.performanceFilterRegex = allowOnlyRegex;
-    }
-    this.performanceObserver = new PerformanceObserver( ( list ) => {
-      list.getEntries()
-          .filter( entry => entry.name.match( this.performanceFilterRegex ) )
-          .forEach( ( entry ) => {
-            sendDownloadTime( this.trackerName, entry, Configs.ga.categories.DEFAULT_DOWNLOAD_TIME );
-            sendServerWaitingTime( this.trackerName, entry, Configs.ga.categories.DEFAULT_WAITING_TIME );
-            sendDurationTime( this.trackerName, entry, Configs.ga.categories.DEFAULT_DURATION_TIME );
-          } );
-    } );
-
-    this.performanceObserver.observe( { entryTypes: [ 'resource' ] } );
-  }
-
   reportPage( title, page = window.location.pathname ) {
     try {
       ga( `${this.trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
@@ -223,6 +278,14 @@ export class GaTracker {
     }
   }
 
+  /**
+   * Reporting an action performed
+   * All arguments are strings
+   * @param {string} category - action category
+   * @param {Object} action - action itself
+   * @param {string} label - label of an action
+   * @param {number} value - $ value of the action
+   */
   reportAction( category, action, label = '', value ) {
     try {
       ga( `${this.trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
@@ -240,6 +303,11 @@ export class GaTracker {
     }
   }
 
+  /**
+   * Reporting an exception to GA
+   * @param {string} exDescription
+   * @param {boolean} isFatal
+   */
   reportException( exDescription, isFatal ) {
     try {
       ga( `${this.trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
@@ -255,34 +323,26 @@ export class GaTracker {
     }
   }
 
-  reportTimeToFirstPaint( label = '' ) {
-    try {
-      const timing = window.performance.timeOrigin;
-      const pageLoadTime = ( timing.loadEventStart - timing.navigationStart );
-      ga( `${this.trackerName}.set`, EPOCH_DIM, Date.now() ); // utc epoch
-      ga( `${this.trackerName}.send`, {
-        hitType:        'timing',
-        timingCategory: 'TIME_TO_FIRST_PAINT',
-        timingVar:      'duration',
-        timingValue:    pageLoadTime,
-        timingLabel:    label,
-        transport:      'beacon',
-      } );
-    }
-    catch ( e ) {
-
-    }
-  }
-
 }
 
+/**
+ * Run this function as soon as possible in your code in order to initialize google analytics reporting
+ *
+ * @param {string} trackerId - Id of your app defined in Google analytics account, usually starts with UA-
+ * @param {string} trackerName - a name to represent a GA tracker. Useful if you want to have 2 separate GA trackers
+ * @param {Object} history - history object. we are using https://www.npmjs.com/package/history
+ * @param {string} performanceAllowOnlyRegex - used for REST performance logging purposes. Only pages who's url matches the regex will be reported.
+ * if left empty will not report anything
+ * @return {GaTracker} - the singleton object through which reporting is made
+ */
 export function googleAnalyticsInit( trackerId, trackerName, history, performanceAllowOnlyRegex = null ) {
   try {
     tracker = new GaTracker( trackerId, trackerName );
     if ( history ) {
-      tracker.bindToBrowserHistory( history );
+      bindToBrowserHistory.call( tracker, history );
     }
-    tracker.bindToRequestsPerformance( performanceAllowOnlyRegex );
+    bindToRequestsPerformance.call( tracker, performanceAllowOnlyRegex );
+    bindToFirstPaint.call( tracker, trackerName );
   }
   catch ( e ) {
     console.error( 'failed to load google analytics. GA will not work', e );
@@ -293,12 +353,12 @@ export function googleAnalyticsInit( trackerId, trackerName, history, performanc
 }
 
 /**
- * This function suuplies the structure that is consumed by GA when reporting a page view
+ * This function is a POJO that suplies the structure that is consumed by GA when reporting a page view
  * Usually this is only used when you need to report a virtual page
  * (example: dashboard country -> incidents list filtered by country, we report incidents/country/FR
- * @param title - reported page title
- * @param virtualPath - the virtual path
- * @param isVirtualPathOnly - when true the virtual page will be appended to the actual path, false will replace it completely
+ * @param {string} title - reported page title
+ * @param {string} virtualPath - the virtual path
+ * @param {string} isVirtualPathOnly - (default: false) when true the virtual page will be appended to the actual path, false will replace it completely
  * @return {{virtualPath: *, isVirtualPathOnly: boolean, title: *}}
  */
 export function gaBuildPageViewState( title, virtualPath, isVirtualPathOnly = false ) {

@@ -1,10 +1,25 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable */
 import { tracker } from './GoogleAnalytics';
 
 /**
- * This middleware will send reports to google analytics with actions passed to redux
- * As most of the application actions are done via redux we will capture most of them here
- * Actions that need to be reported must have an object called ga present
+ * Used with conjunction with redux
+ * Usage: createStore(reducer, preloadState, applyMiddleware(gaReportingMiddleware))
+ *
+ * This middleware will send reports to google analytics automatically with actions passed to redux action function
+ * In order to change the category from a default, you need to pass an object called "ga" with the actions object (it will be removed later)
+ *
+ * Usage:
+ *      @reportGoogleAnalytics
+         function myAction(text) {
+                return {
+                    type: actionTypes.MY_ACTION,
+                    filterBy: text,
+                    ga: {
+                      category: "myCategory"
+                    }
+                }
+            },
+
  */
 const GaReportingReduxMiddleware = store => next => ( action ) => {
   const nextState = next( action ); // reduce state to the next stage
