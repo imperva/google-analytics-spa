@@ -53,6 +53,6 @@
     "webpack-bundle-analyzer": "^3.0.3"
   },
   "dependencies": {
-    "query-string": "^6.8.3"
+    "query-string": "^5.1.1"
   }
 }
