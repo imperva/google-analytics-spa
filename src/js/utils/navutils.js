@@ -1,6 +1,7 @@
+/* eslint-disable import/prefer-default-export */
 import * as QueryString from 'query-string';
 
-/* eslint-disable import/prefer-default-export */
+
 function extractAccountId( locationSearch ) {
   if ( !locationSearch ) {
     return locationSearch;
@@ -15,7 +16,7 @@ function extractAccountId( locationSearch ) {
 }
 
 
-export function getAccountId() {
-  extractAccountId( location.search );
+export function getAccountId( queryParams = location.search ) {
+  return extractAccountId( queryParams );
 }
 
