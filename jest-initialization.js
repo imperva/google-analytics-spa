@@ -19,3 +19,4 @@ global.ga = function ga(...args) {
 global.testHistory = createMemoryHistory();
 global.PerformanceObserver = PerformanceObserver;
 googleAnalyticsInit('123', 'tracker', global.testHistory, /.*/);
+jest.mock('./src/js/utils/PerformanceUtils.js');

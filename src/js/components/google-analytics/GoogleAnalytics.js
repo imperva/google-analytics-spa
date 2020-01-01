@@ -1,43 +1,12 @@
 import isEmpty from 'is-empty';
 import Configs from '../../configs/configurations';
+import { hash } from '../../utils/Utils';
+import Texts from '../../configs/texts';
+import { getLastPerformanceEntryByName } from '../../utils/PerformanceUtils';
 
 
 export let _tracker;
 const EPOCH_DIM = 'dimension4';
-
-function hash(length) {
-    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    let text = '';
-
-    const hashLength = length || 6;
-
-    for (let i = 0; i < hashLength; i += 1) {
-        text += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-
-    return text;
-}
-
-//
-// function getEnteriesByName(name, type) {
-//     const perf = (type)
-//         ? window.performance.getEntriesByType(type)
-//         : window.performance.getEntries();
-//     return perf.filter((p) => !!p.name.match(name));
-// }
-
-function getLastPerformanceEntryByName(name, type) {
-    try {
-        const perfs = window.performance.getEntriesByName(name, type);
-        if (!!perfs && perfs.length > 0) {
-            return perfs[perfs.length - 1];
-        }
-        console.info(`measurement "${name}" not found or performance measurement not found`);
-    } catch (e) {
-        console.warn('window.performance.getEntriesByName is not supported');
-    }
-    return null;
-}
 
 function sendDownloadTime(trackerName, entry, category = Configs.ga.categories.DEFAULT_DOWNLOAD_TIME, label = '') {
     ga(`${trackerName}.set`, EPOCH_DIM, Date.now()); // utc epoch
@@ -139,7 +108,7 @@ function bindToRequestsPerformance(config) {
 
     //in order to have backward compatibility we allow to pass string and object
     if (!isEmpty(config)) {
-        if (typeof config === 'string') {
+        if (typeof config === 'string' || config instanceof RegExp) {
             performanceFilterRegex = config;
         }
         else {
@@ -193,8 +162,10 @@ function bindToBrowserHistory(history) {
 }
 
 /**
- * @public
- * @hideconstructor
+ * @class
+ * @alias tracker()
+ * @static
+ * @kind Google Analytics reporting object (singleton)
  */
 export class GaTracker {
     constructor(trackerId, trackerName, gaProperties = {}, gaDimensions = {}) {
@@ -202,8 +173,7 @@ export class GaTracker {
         this.lastMeasure = 0;
 
         if (!trackerId) {
-            throw new Error('Google Analytics tracker must receive an id! (pattern: UA-XXXXXX-xx)'
-                            + '\nId can be located at your google analytics site: https://analytics.google.com');
+            throw new Error(Texts.GA_FACTORY_NO_ID_FAILED);
         }
 
         // just in case that tracker name was not provided
@@ -230,6 +200,7 @@ export class GaTracker {
     /**
      * @public
      * @alias reportEvent
+     * @kind instance method of tracker()
      * @summary Reporting an event performed
      * @param {string} category - event category
      * @param {string} action - event name
@@ -255,7 +226,7 @@ export class GaTracker {
     /**
      * @public
      * @function
-     * @summary Manually set user id
+     * @summary (Usually should not be used) Manually set user id (might be overriden by next requests)
      * @param {string} identifier - identifier that is used to identify this specific user across multiple sessions and / or devices
      */
     setUserId(identifier) {
@@ -263,6 +234,7 @@ export class GaTracker {
     }
 
     /**
+     * Not required by default
      * @public
      * @summary Manually report the duration of last sent request<br>duration = request initiation until last byte receipt
      * @param {string} category - perofmance event category
@@ -277,6 +249,7 @@ export class GaTracker {
     }
 
     /**
+     * Not required by default
      * @public
      * @summary Reports the server waiting time until download starts
      * @param {string} category
@@ -292,6 +265,7 @@ export class GaTracker {
     }
 
     /**
+     * Not required by default
      * @public
      * @summary Reports the resource download time
      * @param {string} category
@@ -330,6 +304,7 @@ export class GaTracker {
     }
 
     /**
+     * Not required by default, if you are using 'history' package
      * @public
      * Manual report of navigation event
      * Usually there's no need to report pages manually, since they are reported automatically
@@ -418,27 +393,32 @@ export function googleAnalyticsInit(trackerId,
     gaProperties = {},
     gaDimensions = {}) {
     try {
+        let isPerformanceObserverDefined = true;
         _tracker = new GaTracker(trackerId, trackerName, gaProperties, gaDimensions);
         if (!isEmpty(history)) {
             bindToBrowserHistory.call(_tracker, history);
         }
         else {
-            console.warn('history dependency was not found. \n' +
-                         'Automatic page navigation will not be reported.\n' +
-                         'You can still report page navigation using: report().reportPage(my-title, my-path)');
+            console.warn(Texts.NO_HISTORY);
         }
 
-        if (!isEmpty(PerformanceObserver)) {
+        try {
+            // eslint-disable-next-line no-unused-vars
+            isPerformanceObserverDefined = !!PerformanceObserver;
+        } catch (e) {
+            isPerformanceObserverDefined = false;
+        }
+
+        if (isPerformanceObserverDefined) {
             bindToRequestsPerformance.call(_tracker, performanceConfig);
             bindToFirstPaint.call(_tracker, trackerName);
         }
         else {
-            console.warn('PerformanceObserver is not supported on this browser.\n' +
-                         ' Automatic performance will not be reported.');
+            console.warn(Texts.NO_AUTO_PERFORMANCE);
         }
 
     } catch (e) {
-        console.error('failed to load @impervaos/google-analytics-spa. It will not work due to: ', e);
+        console.error(Texts.GA_FACTORY_FAILED, e);
         _tracker = new GaTracker('invalid-id', '', gaProperties, gaDimensions);
     } finally {
         window.__GA_TRACKER__ = _tracker;
