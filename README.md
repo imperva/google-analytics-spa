@@ -32,7 +32,14 @@ import { tracker, googleAnalyticsInit } from './components/google-analytics/Goog
 googleAnalyticsInit( 'UA-174000-11',
                      'MyTrackerName',
                      historyObject,
-                     /.*localhost.*/i );
+                     /.*localhost.*/i,
+                      {
+                          userId: 1
+                      },
+                      {
+                          dimension1: 'dim1',
+                          dimension2: 'dim2'
+                      });
 
 
 //action code
@@ -146,6 +153,8 @@ Run this function as soon as possible in your code in order to initialize google
 -   `history` **[Object][32]** history object. we are using [https://www.npmjs.com/package/history][35]
 -   `performanceAllowOnlyRegex` **[string][31]** used for REST performance logging purposes. Only pages who's url matches the regex will be reported.
     if left empty will not report anything (optional, default `null`)
+-   `gaProperties` **[Object][32]** ga properties including the userId property.
+-   `gaDimesions` **[Object][32]** ga dimensions object with key value pairs of dimensions (dimension1, dimension2...) to report every time
 
 Returns **GaTracker** the singleton object through which reporting is made
 

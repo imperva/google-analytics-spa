@@ -1,16 +1,11 @@
 /* eslint-disable no-console,no-undef,no-empty,no-param-reassign,prefer-rest-params,no-unused-expressions,func-names */
 import Utils from '@imperva/base';
 import Configs from '../../configs/configurations';
-import { getAccountId } from '../../utils/navutils';
 
 
 // eslint-disable-next-line import/no-mutable-exports
 export let tracker;
-const X_PASSPORT_ID_DIM = 'dimension1';
-const USER_ACCOUNT_DIM = 'dimension2';
-const ACCOUNT_ID_DIM = 'dimension3';
 const EPOCH_DIM = 'dimension4';
-const IS_PAYING_CUSTOMER = 'dimension5';
 
 // eslint-disable-next-line no-unused-vars
 function getEnteriesByName( name, type ) {
@@ -153,7 +148,7 @@ function bindToBrowserHistory( history ) {
 
 export class GaTracker {
 
-  constructor( trackerId, trackerName, gaProperties = {} ) {
+  constructor( trackerId, trackerName, gaProperties = {}, gaDimensions = {} ) {
     this.lastResource = 0;
     this.lastMeasure = 0;
     this.performanceFilterRegex = '';
@@ -170,7 +165,6 @@ export class GaTracker {
     // https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
     const properties = Object.assign( {
       name:                trackerName,
-      userId:              getAccountId(),
       cookieDomain:        'auto',
       sampleRate:          100, // Specifies what percentage of users should be tracked
       siteSpeedSampleRate: 100, // This setting determines how often site speed tracking beacons will be sent,
@@ -179,10 +173,10 @@ export class GaTracker {
 
 
     ga( 'create', trackerId, properties );
-    ga( `${this.trackerName}.set`, X_PASSPORT_ID_DIM, window.xPassportId ); // incapsula session id
-    ga( `${this.trackerName}.set`, USER_ACCOUNT_DIM, window.userAccount ); // original incapsula id
-    ga( `${this.trackerName}.set`, ACCOUNT_ID_DIM, getAccountId() ); // browsed account id
-    ga( `${this.trackerName}.set`, IS_PAYING_CUSTOMER, window.isPayingCustomer ); // is paying customer
+
+    Object.entries( gaDimensions ).forEach( ( [ gaDimensionKey, gaDimensionValue ] ) => {
+      ga( `${this.trackerName}.set`, `${gaDimensionKey}`, `${gaDimensionValue}` );
+    } );
   }
 
 
@@ -335,9 +329,9 @@ export class GaTracker {
  * if left empty will not report anything
  * @return {GaTracker} - the singleton object through which reporting is made
  */
-export function googleAnalyticsInit( trackerId, trackerName, history, performanceAllowOnlyRegex = null ) {
+export function googleAnalyticsInit( trackerId, trackerName, history, performanceAllowOnlyRegex = null, gaProperties = {}, gaDimensions = {} ) {
   try {
-    tracker = new GaTracker( trackerId, trackerName );
+    tracker = new GaTracker( trackerId, trackerName, gaProperties, gaDimensions );
     if ( history ) {
       bindToBrowserHistory.call( tracker, history );
     }
@@ -346,7 +340,7 @@ export function googleAnalyticsInit( trackerId, trackerName, history, performanc
   }
   catch ( e ) {
     console.error( 'failed to load google analytics. GA will not work', e );
-    tracker = new GaTracker( 'invalid-id', '' );
+    tracker = new GaTracker( 'invalid-id', '', gaProperties, gaDimensions );
   }
 
   return tracker;

@@ -11,7 +11,14 @@ import './Demo.scss';
 googleAnalyticsInit( 'UA-17432465-11',
                      'some_tracker',
                      null,
-                     /.*localhost.*/i );
+    /.*localhost.*/i,
+  {
+    userId: 'myUser',
+  },
+  {
+    dimension1: 'value1',
+    dimension2: 'value2',
+  } );
 
 const Rest = {
   google: 'index.html',
