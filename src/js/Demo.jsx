@@ -2,7 +2,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { CancelSimpleButton } from '@imperva/buttons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { tracker, googleAnalyticsInit } from './components/google-analytics/GoogleAnalytics';
@@ -27,8 +26,9 @@ const Rest = {
 const Action = props => ( <React.Fragment key={props.id}>
   <td>
     <div className={'first-col'}>
-      <CancelSimpleButton
-        icon={<FontAwesomeIcon icon={faPaperPlane} size="2x" style={{ color: 'green' }} />}
+      <FontAwesomeIcon
+        icon={faPaperPlane}
+        className={'action-button'}
         onClick={() => {
           console.log( props.id );
           props.onClick();

@@ -1,11 +1,24 @@
 /* eslint-disable no-console,no-undef,no-empty,no-param-reassign,prefer-rest-params,no-unused-expressions,func-names */
-import Utils from '@imperva/base';
+import isEmpty from 'is-empty';
 import Configs from '../../configs/configurations';
 
 
 // eslint-disable-next-line import/no-mutable-exports
 export let tracker;
 const EPOCH_DIM = 'dimension4';
+
+function hash( length ) {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let text = '';
+
+  const hashLength = length || 6;
+
+  for ( let i = 0; i < hashLength; i += 1 ) {
+    text += chars.charAt( Math.floor( Math.random() * chars.length ) );
+  }
+
+  return text;
+}
 
 // eslint-disable-next-line no-unused-vars
 function getEnteriesByName( name, type ) {
@@ -104,7 +117,7 @@ function bindToFirstPaint( trackerName ) {
  * @param {string} allowOnlyRegex - Only requests whos URL matches this regex would be reported. Reports nothing if left empty;
  */
 function bindToRequestsPerformance( allowOnlyRegex ) {
-  if ( Utils.isEmpty( allowOnlyRegex ) ) {
+  if ( isEmpty( allowOnlyRegex ) ) {
     // TODO by default filter only requests that are going to the specific ms server
     this.performanceFilterRegex = allowOnlyRegex;
   }
@@ -136,9 +149,9 @@ function bindToRequestsPerformance( allowOnlyRegex ) {
 function bindToBrowserHistory( history ) {
   // eslint-disable-next-line no-unused-vars
   history.listen( ( location, action ) => {
-    const virtualPath = Utils.isEmpty( location.state ) || Utils.isEmpty( location.state.virtualPath ) ? '' : location.state.virtualPath;
-    const pageTitle = Utils.isEmpty( location.state ) || Utils.isEmpty( location.state.title ) ? '' : location.state.title;
-    const combinedPath = Utils.isEmpty( location.state ) || Utils.isEmpty( location.state.isVirtualPathOnly ) || !location.state.isVirtualPathOnly
+    const virtualPath = isEmpty( location.state ) || isEmpty( location.state.virtualPath ) ? '' : location.state.virtualPath;
+    const pageTitle = isEmpty( location.state ) || isEmpty( location.state.title ) ? '' : location.state.title;
+    const combinedPath = isEmpty( location.state ) || isEmpty( location.state.isVirtualPathOnly ) || !location.state.isVirtualPathOnly
         ? ( `${window.location.pathname}/${virtualPath}` ).replace( '//', '/' )
         : virtualPath;
 
@@ -159,7 +172,7 @@ export class GaTracker {
     }
 
     // just in case that tracker name was not provided
-    this.trackerName = !trackerName ? Utils.hash( 6 ) : trackerName;
+    this.trackerName = !trackerName ? hash( 6 ) : trackerName;
 
 
     // https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
@@ -196,7 +209,7 @@ export class GaTracker {
    */
   reportAjaxDuration( category, name, label ) {
     const entry = getLastPerformanceEntryByName( name, 'resource' );
-    if ( !Utils.isEmpty( entry ) ) {
+    if ( !isEmpty( entry ) ) {
       sendDurationTime( this.trackerName, entry, category, label );
     }
   }
@@ -210,7 +223,7 @@ export class GaTracker {
   reportAjaxWait( category, name, label ) {
     const entry = getLastPerformanceEntryByName( name, 'resource' );
 
-    if ( !Utils.isEmpty( entry ) ) {
+    if ( !isEmpty( entry ) ) {
       sendServerWaitingTime( this.trackerName, entry, category, label );
     }
   }
@@ -223,7 +236,7 @@ export class GaTracker {
    */
   reportAjaxDownload( category, name, label ) {
     const entry = getLastPerformanceEntryByName( name, 'resource' );
-    if ( !Utils.isEmpty( entry ) ) {
+    if ( !isEmpty( entry ) ) {
       sendDownloadTime( this.trackerName, entry, category, label );
     }
   }
