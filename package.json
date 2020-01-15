@@ -31,8 +31,6 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.22",
     "@fortawesome/free-regular-svg-icons": "^5.10.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
-    "@imperva/base": "^3.3.2",
-    "@imperva/buttons": "^2.3.4",
     "@imperva/vulcan": "^1.0.1",
     "babel-eslint": "^10.0.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
@@ -46,7 +44,7 @@
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-syntax-highlighter": "^11.0.2",
-    "react-test-renderer": "16.4.2",
+    "react-test-renderer": "^16.4.2",
     "webpack-bundle-analyzer": "^3.0.3"
   },
   "dependencies": {

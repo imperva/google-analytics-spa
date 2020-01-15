@@ -5,6 +5,25 @@
 
   .first-col {
     display: flex;
+    align-items: center;
+    justify-content: flex-start;
   }
 
+  .action-button {
+    color: darkgreen;
+    font-size: 1.5em;
+    border-radius: 50%;
+    border: solid 1px grey;
+    padding: 10px;
+
+    &:hover {
+      cursor: pointer;
+      box-shadow: 0 0 10px 0 grey;
+      transition: all 0.3s ease-out ;
+    }
+    &:active {
+      box-shadow: 0 0 0 0 lightgreen;
+      transition: all 0.3s ease-in ;
+    }
+  }
 }
