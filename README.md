@@ -1,3 +1,6 @@
+[![contributions welcome](https://img.shields.io/badge/node-8.x.x-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+[![contributions welcome](./badges/badge-lines.svg)]()
+
 # Google Analytics reporter
 
 This library will allow you to communicate with your google analytics 
@@ -14,7 +17,7 @@ npm i @imperva/google-analytics
 ####In your index.html** add the following snippet 
 **or whatever page that is loaded first in your site
 
-***I decided not to embed the ga.js code, since it might change unexpectedly
+***I decided not to embed the ga.js code, since google promissed to change it unexpectedly
 ```html
     <!-- Google Analytics -->
     <script>
@@ -58,7 +61,7 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 
 
 ```
-##Tracker object
+## Tracker object
 
 #### setUserId
 
