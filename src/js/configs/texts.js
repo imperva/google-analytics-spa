@@ -1,6 +1,6 @@
 export default {
-  notifications: {
-    getDashboardDataFailedNotificationText: () => 'Failed to fetch dashboard data',
-    getSsessionTimeOutText:                 () => 'Session timed out, please re-login.',
-  },
+    notifications: {
+        getDashboardDataFailedNotificationText: () => 'Failed to fetch dashboard data',
+        getSsessionTimeOutText: () => 'Session timed out, please re-login.',
+    },
 };

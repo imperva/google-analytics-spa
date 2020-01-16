@@ -7,89 +7,92 @@ import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { tracker, googleAnalyticsInit } from './components/google-analytics/GoogleAnalytics';
 import './Demo.scss';
 
-googleAnalyticsInit( 'UA-17432465-11',
-                     'some_tracker',
-                     null,
+googleAnalyticsInit('UA-17432465-11',
+    'some_tracker',
+    null,
     /.*localhost.*/i,
-  {
-    userId: 'myUser',
-  },
-  {
-    dimension1: 'value1',
-    dimension2: 'value2',
-  } );
+    {
+        userId: 'myUser',
+    },
+    {
+        dimension1: 'value1',
+        dimension2: 'value2',
+    });
 
 const Rest = {
-  google: 'index.html',
+    google: 'index.html',
 };
 
-const Action = props => ( <React.Fragment key={props.id}>
-  <td>
-    <div className={'first-col'}>
-      <FontAwesomeIcon
-        icon={faPaperPlane}
-        className={'action-button'}
-        onClick={() => {
-          console.log( props.id );
-          props.onClick();
-        }}
-      />
-      <p style={{ marginLeft: '15px' }}>{props.id}</p>
-    </div>
-  </td>
-  <td>
-    <SyntaxHighlighter language="javascript">
-      {props.onClick.toString()
-                  .replace( /__WEBPACK_.*tracker.*\./gi,
-                           'tracker.' )}</SyntaxHighlighter>
-  </td>
-</React.Fragment> );
+const Action = (props) => (
+    <React.Fragment key={props.id}>
+        <td>
+            <div className="first-col">
+                <FontAwesomeIcon
+                    icon={faPaperPlane}
+                    className="action-button"
+                    onClick={() => {
+                        console.log(props.id);
+                        props.onClick();
+                    }}
+                />
+                <p style={{ marginLeft: '15px' }}>{props.id}</p>
+            </div>
+        </td>
+        <td>
+            <SyntaxHighlighter language="javascript">
+                {props.onClick.toString()
+                    .replace(/__WEBPACK_.*tracker.*\./gi,
+                        'tracker.')}
+            </SyntaxHighlighter>
+        </td>
+    </React.Fragment>
+);
 
 Action.propTypes = {
-  id:      PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
+    id: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
 };
 
 const Demo = () => (
-  <div className="demo">
-    <table>
-      <thead>
-        <tr>
-          <th>Action</th>
-          <th>Code</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <Action
-            id={'report_action_1'}
-            onClick={() => tracker.reportAction( 'GA-DEMO', 'ACTION-1', 'DEVELOPMENT', 1 )}
-          />
-        </tr>
-        <tr>
-          <Action
-            id={'Report something'}
-            onClick={() => {}}
-          />
-        </tr>
-        <tr>
-          <Action
-            id={'Send REST call and check console print'}
-            onClick={() => {
-              fetch( Rest.google )
-                            .then( ( response ) => {
-                              console.log( `response from google was received: ${response}` );
-                            } )
-                            .catch( error => console.error( error ) );
-            }}
-          />
-        </tr>
-      </tbody>
-    </table>
+    <div className="demo">
+        <table>
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <Action
+                        id="report_action_1"
+                        onClick={() => tracker.reportAction('GA-DEMO', 'ACTION-1', 'DEVELOPMENT', 1)}
+                    />
+                </tr>
+                <tr>
+                    <Action
+                        id="Report something"
+                        onClick={() => {
+                        }}
+                    />
+                </tr>
+                <tr>
+                    <Action
+                        id="Send REST call and check console print"
+                        onClick={() => {
+                            fetch(Rest.google)
+                                .then((response) => {
+                                    console.log(`response from google was received: ${response}`);
+                                })
+                                .catch((error) => console.error(error));
+                        }}
+                    />
+                </tr>
+            </tbody>
+        </table>
 
 
-  </div>
+    </div>
 );
 
 export default Demo;
-

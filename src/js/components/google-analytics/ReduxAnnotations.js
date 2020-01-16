@@ -9,18 +9,18 @@
  *          }
 
  */
-export default function reportGoogleAnalytics( target, key, descriptor ) {
-  const origFunctionality = target[ key ];
-  target[ key ] = ( ...args ) => {
-    const result = origFunctionality( ...args );
+export default function reportGoogleAnalytics(target, key, descriptor) {
+    const origFunctionality = target[key];
+    target[key] = (...args) => {
+        const result = origFunctionality(...args);
 
-    const category = ( result.category );
+        const { category } = result;
 
-    result.ga = {
-      category,
-      label: '',
+        result.ga = {
+            category,
+            label: '',
+        };
+
+        return result;
     };
-
-    return result;
-  };
 }
