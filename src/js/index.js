@@ -3,8 +3,8 @@ import reportGoogleAnalytics from './components/google-analytics/ReduxAnnotation
 import GaReportingReduxMiddleware from './components/google-analytics/ReduxGaMiddleware';
 
 export {
-  tracker,
-  googleAnalyticsInit,
-  reportGoogleAnalytics,
-  GaReportingReduxMiddleware,
+    tracker,
+    googleAnalyticsInit,
+    reportGoogleAnalytics,
+    GaReportingReduxMiddleware,
 };

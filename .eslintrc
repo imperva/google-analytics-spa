@@ -1,11 +1,13 @@
 {
   "env": {
     "browser": true,
-    "es6": true
+    "es6": true,
+    "jest": true
   },
   "globals": {
     "ga": "readonly",
-    "global": "readonly"
+    "global": "readonly",
+    "jest": "readonly"
   },
   "extends": [
     "plugin:react/recommended",

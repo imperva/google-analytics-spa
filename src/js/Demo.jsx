@@ -55,6 +55,7 @@ Action.propTypes = {
 
 const Demo = () => (
     <div className="demo">
+        <div>{'@imperva/google-analytics reporter will identify the requests you send and will report performance data to GA'}</div>
         <table>
             <thead>
                 <tr>

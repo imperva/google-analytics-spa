@@ -12,7 +12,9 @@ npm i @imperva/google-analytics
 ```
 
 ####In your index.html** add the following snippet 
-**or whatever is loaded first in your site
+**or whatever page that is loaded first in your site
+
+***I decided not to embed the ga.js code, since it might change unexpectedly
 ```html
     <!-- Google Analytics -->
     <script>
@@ -25,13 +27,15 @@ npm i @imperva/google-analytics
 ## Usage Example
 
 ```jsx harmony
-import { tracker, googleAnalyticsInit } from './components/google-analytics/GoogleAnalytics'; 
+import { tracker, googleAnalyticsInit } from '@imperva/google-analytics'; 
+import { createBrowserHistory } from 'history';
 
+const history = createBrowserHistory({ basename: '' });
 
 //your code here
-googleAnalyticsInit( 'UA-174000-11',
+googleAnalyticsInit( 'UA-000000-00',
                      'MyTrackerName',
-                     historyObject,
+                     history,
                      /.*localhost.*/i,
                       {
                           userId: 1
@@ -42,11 +46,16 @@ googleAnalyticsInit( 'UA-174000-11',
                       });
 
 
-//action code
+//event reporting
 tracker.reportAction( 'MY_CATEGORY', 'Button_CLICK', 'open button clicked', 0 )
 
-//manual page navigation reporting
+//manual page view reporting (i.e. reporting that navigation was done to page http://page.com/first) 
 tracker.reportPage( 'my site title', 'http://page.com/first' );
+
+//navigating to another page in the application
+// @imperva/google-analytics will report navigation to page called '/virtual/path' automatically instead of reporting navigation to '/test/path'
+history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true ) );
+
 
 ```
 ##Tracker object
