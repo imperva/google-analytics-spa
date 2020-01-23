@@ -25,10 +25,11 @@
     "lcov"
   ],
   "collectCoverageFrom": [
-    "**/js/components/**/*.{js,jsx}"
+    "**/js/components/google-analytics/**/*.{js,jsx}"
   ],
   "coveragePathIgnorePatterns": [
     "<rootDir>/node_modules/",
+    "__mocks__",
     ".*\\.s?css",
     ".*\\.json"
   ],

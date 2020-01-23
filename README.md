@@ -1,23 +1,29 @@
-[![contributions welcome](https://img.shields.io/badge/node-8.x.x-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+[![contributions welcome](https://img.shields.io/badge/node-8+-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
+[![contributions welcome](https://img.shields.io/badge/HTML-5-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
 [![contributions welcome](./badges/badge-lines.svg)]()
 
 # Google Analytics reporter
 
-This library will allow you to communicate with your google analytics 
-It will allow you to send actions to GA
-Automatically reports the "time to first paint", pages navigation and REST calls performance
+This library was created with Single Page Application architecture in mind.
+Its goal is to provide as simple as possible usage of Google Analytics for SPAs.
+
+#### Some of its features that come virtually without any "price tag" are
+* Reporting of virtual navigation (based on HTML5 history object) including reporting page alias and not the actual url 
+* Your REST call & navigation performance to GA - so you could monitor download, server and duration times.  
+* Reports the "time to first paint" for your application - i.e. how fast the users see the first meaningful page of your application (and not a blank page)
+* Reporting any redux action to GA using 'reportGoogleAnalytics' decorator (annotation)
+* Easily report events / pageviews / performance values 
 
 
 ## Installation
 
+Install the package
 ```bash
 npm i @imperva/google-analytics 
 ```
 
-####In your index.html** add the following snippet 
-**or whatever page that is loaded first in your site
+Add the following snippet in your **index.html** _(or whatever page that is loaded first)_*** 
 
-***I decided not to embed the ga.js code, since google promissed to change it unexpectedly
 ```html
     <!-- Google Analytics -->
     <script>
@@ -26,31 +32,49 @@ npm i @imperva/google-analytics
     <script defer src='https://www.google-analytics.com/analytics.js'></script>
     <!-- End Google Analytics -->
 ```
-
-## Usage Example
+Add the following in your first JSX / JS file (the root of your SPA application)
 
 ```jsx harmony
-import { tracker, googleAnalyticsInit } from '@imperva/google-analytics'; 
+import { googleAnalyticsInit } from '@imperva/google-analytics';
 import { createBrowserHistory } from 'history';
 
 const history = createBrowserHistory({ basename: '' });
 
-//your code here
-googleAnalyticsInit( 'UA-000000-00',
-                     'MyTrackerName',
-                     history,
-                     /.*localhost.*/i,
-                      {
-                          userId: 1
-                      },
-                      {
-                          dimension1: 'dim1',
-                          dimension2: 'dim2'
-                      });
+//from https://analytics.google.com/analytics/web/#/.../admin/property/settings (your GA property page)
+const myGaApplicationId = 'UA-000000-00'; 
+//the name of your tracker, this is optional
+const myTrackerName = 'MyTrackerName';
+//report performance of pages that match this regex
+const performanceRegex = /.*localhost.*/i;
 
+//every request will also carry these dimensions with it
+const customDimensions = {
+                           dimension1: 'dim1',
+                           dimension2: 'dim2',
+                           dimension3: Date.now(), //example: session start timestamp 
+                         };
+//GA tracker properties (https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference)  
+const properties = { userId: 1 }; //example reporting userId
+
+googleAnalyticsInit( myGaApplicationId,
+                     myTrackerName,
+                     history,
+                     performanceRegex,
+                     properties,
+                     customDimensions
+);
+```
+
+***_I decided not to embed the ga.js code, since google promissed to change it unexpectedly_
+## Usage Example
+
+```jsx harmony
+import { tracker, googleAnalyticsInit } from '@imperva/google-analytics'; 
 
 //event reporting
-tracker.reportAction( 'MY_CATEGORY', 'Button_CLICK', 'open button clicked', 0 )
+function reportClick() {
+    tracker.reportAction( 'MY_CATEGORY', 'Button_CLICK', 'open button clicked', 0 )
+}
 
 //manual page view reporting (i.e. reporting that navigation was done to page http://page.com/first) 
 tracker.reportPage( 'my site title', 'http://page.com/first' );
@@ -58,6 +82,17 @@ tracker.reportPage( 'my site title', 'http://page.com/first' );
 //navigating to another page in the application
 // @imperva/google-analytics will report navigation to page called '/virtual/path' automatically instead of reporting navigation to '/test/path'
 history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true ) );
+
+//react example
+render() {
+    return (
+        <div>
+           <button onClick={reportClick} />
+        </div>
+    );
+}
+
+
 
 
 ```

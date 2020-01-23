@@ -1,4 +1,16 @@
 {
+  "env": {
+    "test": {
+      "plugins": [
+        [
+          "@babel/transform-runtime",
+          {
+            "regenerator": true
+          }
+        ]
+      ]
+    }
+  },
   "plugins": [
     [
       "@babel/plugin-proposal-decorators",
@@ -23,3 +35,4 @@
     ]
   ]
 }
+

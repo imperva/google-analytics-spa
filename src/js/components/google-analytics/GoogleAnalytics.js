@@ -114,8 +114,8 @@ function bindToFirstPaint(trackerName) {
  */
 function bindToRequestsPerformance(allowOnlyRegex) {
     if (isEmpty(allowOnlyRegex)) {
-    // TODO by default filter only requests that are going to the specific ms server
-        this.performanceFilterRegex = allowOnlyRegex;
+        //TODO test this
+        this.performanceFilterRegex = /.*/; //allow everyone
     } else {
         this.performanceFilterRegex = allowOnlyRegex;
     }
