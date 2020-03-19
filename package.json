@@ -1,7 +1,7 @@
 {
   "name": "@imperva/google-analytics",
   "version": "1.0.1",
-  "description": "",
+  "description": "Google Analytics for your single page application",
   "main": "lib/google-analytics.min.js",
   "engines": {
     "node": ">=8.15.1"
@@ -19,10 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@gitlab:engineering/react-components/google-analytics"
-  },
-  "publishConfig": {
-    "registry": "http://il-mavenrep-lp1:8080/artifactory/api/npm/npm-local"
+    "url": "git@github.com:michaelrodov/google-analytics.git"
   },
   "author": "Michael Rodov",
   "license": "ISC",
