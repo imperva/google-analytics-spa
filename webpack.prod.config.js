@@ -1,15 +1,30 @@
 const webpack = require('webpack');
 const path = require('path');
 const merge = require('webpack-merge');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const WebpackMonitor = require('webpack-monitor');
+const TerserPlugin = require('terser-webpack-plugin');
 const packagejson = require('./package.json');
 const webpackBaseConfig = require('./webpack.base.config');
 
-module.exports = (env) => {
+
+console.log('\x1b[36m%s\x1b[0m', 'Running production build...');
+
+const configs = (env) => {
     const webpackConfig = merge(webpackBaseConfig, {
         entry: './src/js/index.js',
         mode: 'production',
+        performance: {
+            hints: 'warning'
+        },
+        stats: {
+            builtAt: false,
+            children: false,
+            colors: true,
+            performance: true,
+            logging: 'warn',
+            reasons: true,
+            timings: true
+        },
         output: {
             library: packagejson.name,
             libraryTarget: 'umd',
@@ -17,32 +32,21 @@ module.exports = (env) => {
             filename: `${filterOutScopeName(packagejson.name)}.min.js`,
         },
         optimization: {
-            minimizer: [new UglifyJsPlugin({
-                                               uglifyOptions: {
-                                                   sourceMap: process.env.WITH_MAPS,
-                                                   compress: {
-                                                       drop_console: true,
-                                                   },
-                                               }
-                                           }
-            )],
+            minimize: true,
+            minimizer: [new TerserPlugin({
+                                             extractComments: true,
+                                             parallel: true
+                                         })],
         }
     });
 
-    if (process.env.WITH_MAPS) {
-        webpackConfig.devtool = 'eval-source-map';
+    if (env.analyze) {
+        webpackConfig.plugins.push(new WebpackMonitor({
+                                                          capture: true,
+                                                          launch: true,
+                                                          port: 7000,
+                                                      }));
     }
-
-    if (process.env.ANALYZE) {
-        webpackConfig.plugins.push(new BundleAnalyzerPlugin());
-    }
-
-    // for some reason the --env.production is not recognized by webpack
-    webpackConfig.plugins.push(new webpack.DefinePlugin({
-                                                            'process.env.NODE_ENV': JSON.stringify('production'),
-                                                        }));
-
-    console.log(`Building ${env.production ? 'production' : 'dev'}...`);
 
     return webpackConfig;
 };
@@ -50,3 +54,5 @@ module.exports = (env) => {
 function filterOutScopeName(name) {
     return name.replace(/^@.*\//, '');
 }
+
+module.exports = configs;
