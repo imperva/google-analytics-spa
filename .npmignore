@@ -15,4 +15,3 @@
 # misc
 npm-debug.log
 .npmrc
-build.stats.json
