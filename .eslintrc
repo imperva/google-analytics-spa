@@ -1,0 +1,60 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest": true
+  },
+  "globals": {
+    "ga": "readonly",
+    "global": "readonly",
+    "jest": "readonly"
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+      "react": true
+    },
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "indent": [
+      "error",
+      4
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "react/destructuring-assignment": [
+      "off"
+    ],
+    "max-len": [
+      "warn",
+      {
+        "code": 160
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["build/*.js", "lib/*.js"],
+      "excludedFiles": "webpack*.js"
+    }
+  ]
+}

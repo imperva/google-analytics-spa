@@ -1,0 +1,38 @@
+{
+  "env": {
+    "test": {
+      "plugins": [
+        [
+          "@babel/transform-runtime",
+          {
+            "regenerator": true
+          }
+        ]
+      ]
+    }
+  },
+  "plugins": [
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    "@babel/plugin-proposal-class-properties"
+  ],
+  "presets": [
+    "@babel/preset-react",
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "entry",
+        "corejs": "3",
+        "targets": {
+          "browsers": "ie >= 11"
+        },
+        "debug": false
+      }
+    ]
+  ]
+}
+

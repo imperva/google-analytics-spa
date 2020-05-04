@@ -1,0 +1,25 @@
+
+# compiled output
+/build
+/src
+/badges
+/monitor
+
+# npm cache
+/npm-cache
+
+# dependencies
+/node_modules
+
+# IDEs and editors
+/.idea
+
+# misc
+npm-debug.log
+.npm*
+.babel*
+.eslint*
+.git*
+jest*
+junit*
+webpack*
