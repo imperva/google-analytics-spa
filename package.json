@@ -1,5 +1,5 @@
 {
-  "name": "@imperva/google-analytics-spa",
+  "name": "@impervaos/google-analytics-spa",
   "version": "0.0.1",
   "description": "Google Analytics for your single page application",
   "main": "lib/google-analytics-spa.min.js",
