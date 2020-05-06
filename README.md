@@ -14,7 +14,7 @@ Its goal is to provide as simple as possible usage of Google Analytics for SPAs.
 * Reporting any redux action to GA using 'reportGoogleAnalytics' decorator (annotation)
 * Easily report events / pageviews / performance values 
 
-##Sandbox - play with our demo
+## Live demo
 [![Edit @impervaos/google-analytics-spa](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/imperva/google-analytics-spa/tree/master/?fontsize=14&hidenavigation=1&theme=dark)
 
 ## Installation
