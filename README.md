@@ -19,7 +19,7 @@ Its goal is to provide as simple as possible usage of Google Analytics for SPAs.
 
 Install the package
 ```bash
-npm i @imperva/google-analytics-spa 
+npm i @impervaos/google-analytics-spa 
 ```
 
 Add the following snippet in your **index.html** _(or whatever page that is loaded first)_*** 
@@ -35,7 +35,7 @@ Add the following snippet in your **index.html** _(or whatever page that is load
 Add the following in your first JSX / JS file (the root of your SPA application)
 
 ```jsx harmony
-import { googleAnalyticsInit } from '@imperva/google-analytics-spa';
+import { googleAnalyticsInit } from '@impervaos/google-analytics-spa';
 import { createBrowserHistory } from 'history';
 
 const history = createBrowserHistory({ basename: '' });
@@ -69,7 +69,7 @@ googleAnalyticsInit( myGaApplicationId,
 ## Usage Example
 
 ```jsx harmony
-import { tracker, googleAnalyticsInit } from '@imperva/google-analytics'; 
+import { tracker, googleAnalyticsInit } from '@impervaos/google-analytics'; 
 
 //event reporting
 function reportClick() {
