@@ -1,5 +1,5 @@
 const merge = require('webpack-merge');
-const isEmpty = require('is-empty');
+const path = require('path');
 const webpackBaseConfig = require('./webpack.base.config');
 
 console.log('\x1b[36m%s\x1b[0m', 'Running development build...');
