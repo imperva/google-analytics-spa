@@ -15,6 +15,10 @@ Its goal is to provide as simple as possible usage of Google Analytics for SPAs.
 * Easily report events / pageviews / performance values 
 
 ## Live demo
+[Play with our live demo](https://04zjb.sse.codesandbox.io/)
+
+[Edit live demo](https://codesandbox.io/embed/github/imperva/google-analytics-spa/tree/master/?fontsize=14&hidenavigation=1&theme=dark)
+
 [![Edit @impervaos/google-analytics-spa](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/imperva/google-analytics-spa/tree/master/?fontsize=14&hidenavigation=1&theme=dark)
 
 ## Installation
