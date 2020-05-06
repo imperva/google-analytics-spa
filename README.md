@@ -38,23 +38,32 @@ Add the following in your first JSX / JS file (the root of your SPA application)
 import { googleAnalyticsInit } from '@impervaos/google-analytics-spa';
 import { createBrowserHistory } from 'history';
 
+//[OPTIONAL] You dont have to use the 'history' package
+// However if you do, page navigation would be traced and reported to GA automatically
 const history = createBrowserHistory({ basename: '' });
 
+//This is your GA application id.
 //from https://analytics.google.com/analytics/web/#/.../admin/property/settings (your GA property page)
-const myGaApplicationId = 'UA-000000-00'; 
-//the name of your tracker, this is optional
+const myGaApplicationId = 'UA-XXXXXXX-XX'; 
+//[OPTIONAL] The name of your tracker, in case you will be using multiple trackers
 const myTrackerName = 'MyTrackerName';
 //report performance of pages that match this regex
-const performanceRegex = /.*localhost.*/i;
+//for example: if my backend requests go to http://some.com/api/v1/getMyData we would set this parameter to /.*api\/v1/
+const performanceRegex = /.*/i;
 
-//every request will also carry these dimensions with it
+//every request will also piggyback these dimensions with it
+//For example: user email or any other custom dimension that you need to better track your application usage
+//read more here https://support.google.com/analytics/answer/2709829?hl=en
 const customDimensions = {
-                           dimension1: 'dim1',
-                           dimension2: 'dim2',
+                           dimension1: MyUserDetails.email,
+                           dimension2: MyUserSession.id,
                            dimension3: Date.now(), //example: session start timestamp 
                          };
+//[OPTIONAL] In case you would like to track your users using "GA User explorer" you need to provide GA
+// with a unique identifier per user. 
+// If you would not provide this identifier, google will generate a random id
 //GA tracker properties (https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference)  
-const properties = { userId: 1 }; //example reporting userId
+const properties = { userId: MyUserDetails.id }; //example reporting userId
 
 googleAnalyticsInit( myGaApplicationId,
                      myTrackerName,
@@ -69,18 +78,32 @@ googleAnalyticsInit( myGaApplicationId,
 ## Usage Example
 
 ```jsx harmony
-import { tracker, googleAnalyticsInit } from '@impervaos/google-analytics'; 
+import { tracker } from '@impervaos/google-analytics-spa'; 
+/***
+   * @param {string} error description
+   * @param {boolean} isFatal
+*/
+function reportException(error, isFatal) {
+    tracker.reportException(error, isFatal)
+}
 
 //event reporting
 function reportClick() {
-    tracker.reportAction( 'MY_CATEGORY', 'Button_CLICK', 'open button clicked', 0 )
+    try {
+        performSomeComplicatedAction();
+    } catch(e) {
+        //in case of an error we report it to google analytics
+        reportException(e.message, false);
+    }    
+    
+    tracker.reportAction( 'MY_CATEGORY', 'BUTTON_WAS_CLICKED', 'open button clicked', 0 )
 }
 
 //manual page view reporting (i.e. reporting that navigation was done to page http://page.com/first) 
 tracker.reportPage( 'my site title', 'http://page.com/first' );
 
 //navigating to another page in the application
-// @imperva/google-analytics will report navigation to page called '/virtual/path' automatically instead of reporting navigation to '/test/path'
+// @impervaos/google-analytics-spa will report navigation to page called '/virtual/path' automatically instead of reporting navigation to '/test/path'
 history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true ) );
 
 //react example
@@ -96,7 +119,7 @@ render() {
 
 
 ```
-## Tracker object
+## API: Tracker object
 
 #### setUserId
 
@@ -229,4 +252,20 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 Please make sure to update tests as appropriate.
 
 ## License
-[ISC](https://choosealicense.com/licenses/isc/)
+ISC License
+
+Copyright (c) 2020, Imperva.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Copyright © 2020 Imperva. All rights reserved 

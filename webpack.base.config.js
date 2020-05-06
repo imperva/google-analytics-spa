@@ -22,11 +22,6 @@ const baseConfig = env => {
                         use: ['babel-loader', 'eslint-loader'],
                     },
                     {
-                        test: /\.s?css$/,
-                        exclude: /node_modules/,
-                        use: ['style-loader', 'css-loader', 'sass-loader'],
-                    },
-                    {
                         test: /\.svg$/,
                         exclude: /node_modules/,
                         use: ['svg-url-loader'],

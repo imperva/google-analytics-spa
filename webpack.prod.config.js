@@ -2,6 +2,7 @@ const path = require('path');
 const merge = require('webpack-merge');
 const WebpackMonitor = require('webpack-monitor');
 const TerserPlugin = require('terser-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const packagejson = require('./package.json');
 const webpackBaseConfig = require('./webpack.base.config');
 
@@ -31,6 +32,9 @@ const webpackConfig = (env, args) => {
                                         path: path.join(__dirname, 'lib'),
                                         filename: `${filterOutScopeName(packagejson.name)}.min.js`,
                                     },
+                                    plugins: [
+                                        new CleanWebpackPlugin()
+                                    ],
                                     optimization: {
                                         minimize: true,
                                         minimizer: [new TerserPlugin({
@@ -39,6 +43,12 @@ const webpackConfig = (env, args) => {
                                                                      })],
                                     }
                                 });
+
+    webpackConfig.module.rules.push({
+                                        test: /\.s?css$/,
+                                        exclude: path.resolve('./node_modules'),
+                                        use: ['style-loader', 'css-loader', 'sass-loader'],
+                                    });
 
     if (env.analyze) {
         webpackConfig.plugins.push(new WebpackMonitor({

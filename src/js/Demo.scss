@@ -1,29 +1,79 @@
+$space-between-elements: 15px;
+
+code {
+  background-color: #eee;
+  border-radius: 3px;
+  font-family: courier, monospace;
+  padding: 0 3px;
+}
+
+pre {
+  margin: 0 !important;
+}
 .demo {
   display: flex;
   flex-flow: column;
+  font-size: 16px;
 
-
-  .first-col {
+  .action {
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    flex-flow: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin: $space-between-elements;
+    font-size: 1.1rem;
+
+
+
+    .code_description {
+      display: flex;
+      flex-flow: column;
+      justify-content: space-between;
+    }
+
+    .action-text {
+      margin: 0 0 $space-between-elements/2;
+    }
+
+    .action-button {
+      margin-right: $space-between-elements;
+      font-size: 1rem;
+    }
   }
 
-  .action-button {
-    color: darkgreen;
-    font-size: 1.5em;
-    border-radius: 50%;
-    border: solid 1px grey;
-    padding: 10px;
 
-    &:hover {
-      cursor: pointer;
-      box-shadow: 0 0 10px 0 grey;
-      transition: all 0.3s ease-out ;
-    }
-    &:active {
-      box-shadow: 0 0 0 0 lightgreen;
-      transition: all 0.3s ease-in ;
-    }
+}
+
+button {
+  display: inline-block;
+  padding: 0.7em 1.7em;
+  border-radius: 0.2em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 1.2rem;
+  color: #FFFFFF;
+  background-color: #3369ff;
+  box-shadow: inset 0 -0.6em 1em -0.35em rgba(0, 0, 0, 0.17), inset 0 0.6em 2em -0.3em rgba(255, 255, 255, 0.15), inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12);
+  text-align: center;
+  position: relative;
+
+  &.inline-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: $space-between-elements/3;
+  }
+  &:active {
+    box-shadow: inset 0 0.6em 2em -0.3em rgba(0, 0, 0, 0.15), inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12);
+  }
+
+}
+
+@media all and (max-width: 30em) {
+  button {
+    display: block;
+    margin: 0.4em auto;
   }
 }

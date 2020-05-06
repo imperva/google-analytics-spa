@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --env.development --inline --hot --progress --colors --config webpack.dev.config.js",
+    "dev": "npm start",
     "build": "webpack --env.production --progress  --config webpack.prod.config.js",
     "build:ci": "npm i && npm run test && npm run build && npm run badges",
     "build:analyze": "npm run build -- --env.analyze --json > build.stats.json",
@@ -21,7 +22,7 @@
     "url": "https://github.com/imperva/google-analytics-spa.git"
   },
   "author": "Michael Rodov",
-  "license": "MIT",
+  "license": "ISC",
   "peerDependencies": {
     "history": "^4.10.1"
   },
@@ -40,6 +41,7 @@
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "babel-polyfill": "^6.26.0",
+    "clean-webpack-plugin": "^3.0.0",
     "core-js": "2.5.7",
     "css-loader": "^3.4.2",
     "enzyme": "3.4.4",
@@ -60,10 +62,11 @@
     "jest-junit": "^10.0.0",
     "node-sass": "^4.14.0",
     "peer-deps-externals-webpack-plugin": "^1.0.4",
+    "prismjs": "^1.20.0",
     "prop-types": "^15.7.2",
+    "random-name": "^0.1.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-syntax-highlighter": "^11.0.2",
     "react-test-renderer": "^16.4.2",
     "regenerator-runtime": "^0.13.3",
     "sass": "^1.26.5",

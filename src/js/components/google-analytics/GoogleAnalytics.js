@@ -257,10 +257,9 @@ export class GaTracker {
         this.reportAction(Configs.ga.categories.CATEGORY_MACHINE, action, label, value);
     }
 
-
     /**
    * Reports page view
-   * Usually theres no need to report pages manually, since this feature is turned on automatically
+   * Usually there's no need to report pages manually, since this feature is turned on automatically
    * @param {string} title - reported page title
    * @param {string} page - page url
    */
@@ -280,7 +279,6 @@ export class GaTracker {
 
     /**
    * Reporting an action performed
-   * All arguments are strings
    * @param {string} category - action category
    * @param {Object} action - action itself
    * @param {string} label - label of an action
@@ -300,6 +298,17 @@ export class GaTracker {
         } catch (e) {
             console.error(e);
         }
+    }
+
+    /***
+     * Syntactic sugar for reportAction function (since in GA actions are called events)
+     * @param category
+     * @param action
+     * @param label
+     * @param value
+     */
+    reportEvent(category, action, label, value) {
+        this.reportAction(category, action, label, value);
     }
 
     /**
@@ -328,17 +337,19 @@ export class GaTracker {
  * @param {string} trackerId - Id of your app defined in Google analytics account, usually starts with UA-
  * @param {string} trackerName - a name to represent a GA tracker. Useful if you want to have 2 separate GA trackers
  * @param {Object} history - history object. we are using https://www.npmjs.com/package/history
- * @param {string} performanceAllowOnlyRegex - used for REST performance logging purposes. Only pages who's url matches the regex will be reported.
+ * @param {string} performanceInclude - used for REST performance logging purposes. Only pages who's url matches the regex will be reported.
  * if left empty will not report anything
+ * @param gaProperties - list of google analytics field properties https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
+ * @param gaDimensions - list of custom dimensions https://support.google.com/analytics/answer/2709829?hl=en
  * @return {GaTracker} - the singleton object through which reporting is made
  */
-export function googleAnalyticsInit(trackerId, trackerName, history, performanceAllowOnlyRegex = null, gaProperties = {}, gaDimensions = {}) {
+export function googleAnalyticsInit(trackerId, trackerName, history, performanceInclude = null, gaProperties = {}, gaDimensions = {}) {
     try {
         tracker = new GaTracker(trackerId, trackerName, gaProperties, gaDimensions);
         if (history) {
             bindToBrowserHistory.call(tracker, history);
         }
-        bindToRequestsPerformance.call(tracker, performanceAllowOnlyRegex);
+        bindToRequestsPerformance.call(tracker, performanceInclude);
         bindToFirstPaint.call(tracker, trackerName);
     } catch (e) {
         console.error('failed to load google analytics. GA will not work', e);
