@@ -14,3 +14,7 @@
 # misc
 npm-debug.log
 build.stats.json
+coverage-summary.json
+GoogleAnalytics.js.html
+junit.xml
+lcov.info
