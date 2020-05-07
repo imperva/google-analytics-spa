@@ -90,7 +90,7 @@ import { tracker } from '@impervaos/google-analytics-spa';
    * @param {boolean} isFatal
 */
 function reportException(error, isFatal) {
-    tracker.reportException(error, isFatal)
+    tracker().reportException(error, isFatal)
 }
 
 //event reporting
@@ -102,11 +102,11 @@ function reportClick() {
         reportException(e.message, false);
     }    
     
-    tracker.reportAction( 'MY_CATEGORY', 'BUTTON_WAS_CLICKED', 'open button clicked', 0 )
+    tracker().reportAction( 'MY_CATEGORY', 'BUTTON_WAS_CLICKED', 'open button clicked', 0 )
 }
 
 //manual page view reporting (i.e. reporting that navigation was done to page http://page.com/first) 
-tracker.reportPage( 'my site title', 'http://page.com/first' );
+tracker().reportPage( 'my site title', 'http://page.com/first' );
 
 //navigating to another page in the application
 // @impervaos/google-analytics-spa will report navigation to page called '/virtual/path' automatically instead of reporting navigation to '/test/path'
