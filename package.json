@@ -1,6 +1,6 @@
 {
   "name": "@impervaos/google-analytics-spa",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Google Analytics for your single page application",
   "main": "lib/google-analytics-spa.min.js",
   "engines": {
