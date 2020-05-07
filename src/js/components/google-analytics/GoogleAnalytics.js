@@ -354,8 +354,9 @@ export function googleAnalyticsInit(trackerId, trackerName, history, performance
     } catch (e) {
         console.error('failed to load google analytics. GA will not work', e);
         _tracker = new GaTracker('invalid-id', '', gaProperties, gaDimensions);
+    } finally {
+        window.__GA_TRACKER__ = _tracker;
     }
-
     return _tracker;
 }
 
