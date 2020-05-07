@@ -1,6 +1,6 @@
 # compiled output
-/lib
-/.vulcan
+./lib
+./build
 
 # npm cache
 /npm-cache
@@ -14,7 +14,5 @@
 # misc
 npm-debug.log
 build.stats.json
-coverage-summary.json
-GoogleAnalytics.js.html
 junit.xml
-lcov.info
+build/test-coverage/ui/lcov-report/GoogleAnalytics.js.html
