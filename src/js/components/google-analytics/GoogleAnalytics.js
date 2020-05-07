@@ -2,7 +2,7 @@ import isEmpty from 'is-empty';
 import Configs from '../../configs/configurations';
 
 
-export let tracker;
+export let _tracker;
 const EPOCH_DIM = 'dimension4';
 
 function hash(length) {
@@ -345,18 +345,26 @@ export class GaTracker {
  */
 export function googleAnalyticsInit(trackerId, trackerName, history, performanceInclude = null, gaProperties = {}, gaDimensions = {}) {
     try {
-        tracker = new GaTracker(trackerId, trackerName, gaProperties, gaDimensions);
+        _tracker = new GaTracker(trackerId, trackerName, gaProperties, gaDimensions);
         if (history) {
-            bindToBrowserHistory.call(tracker, history);
+            bindToBrowserHistory.call(_tracker, history);
         }
-        bindToRequestsPerformance.call(tracker, performanceInclude);
-        bindToFirstPaint.call(tracker, trackerName);
+        bindToRequestsPerformance.call(_tracker, performanceInclude);
+        bindToFirstPaint.call(_tracker, trackerName);
     } catch (e) {
         console.error('failed to load google analytics. GA will not work', e);
-        tracker = new GaTracker('invalid-id', '', gaProperties, gaDimensions);
+        _tracker = new GaTracker('invalid-id', '', gaProperties, gaDimensions);
     }
 
-    return tracker;
+    return _tracker;
+}
+
+/**
+ * return the singleton object through which reporting is made
+ * @returns {GaTracker}
+ */
+export function tracker() {
+    return window.__GA_TRACKER__;
 }
 
 /**

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { tracker } from './GoogleAnalytics';
 
 /**
@@ -21,13 +20,14 @@ import { tracker } from './GoogleAnalytics';
             },
 
  */
+// eslint-disable-next-line no-unused-vars
 const GaReportingReduxMiddleware = store => next => ( action ) => {
-  const nextState = next( action ); // reduce state to the next stage
+    const nextState = next( action ); // reduce state to the next stage
 
-  if ( action.ga ) {
-    tracker.gaReportAction( action.ga.category, action.type, null, 0 );
-  }
-  return nextState;
+    if ( action.ga ) {
+        tracker().gaReportAction( action.ga.category, action.type, null, 0 );
+    }
+    return nextState;
 };
 
 export default GaReportingReduxMiddleware;

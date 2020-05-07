@@ -105,7 +105,7 @@ const Demo = () => {
                 actionText={'Report event'}
                 text={'Report that something happened in the application'}
                 id="report_action_1"
-                onClick={() => tracker.reportEvent(CATEGORY, 'BUTTON_WAS_CLICKED', 'DEVELOPMENT', 1)}
+                onClick={() => tracker().reportEvent(CATEGORY, 'BUTTON_WAS_CLICKED', 'DEVELOPMENT', 1)}
                 code={'    /**\n' +
                   '   * Reporting an event in the system\n' +
                   '   * @param {string} category - action category\n' +
@@ -113,13 +113,13 @@ const Demo = () => {
                   '   * @param {string} label - label of an action\n' +
                   '   * @param {number} value - numeric value of the action\n' +
                   '   */\n' +
-                  `tracker.reportEvent(${CATEGORY}, 'BUTTON_WAS_CLICKED', 'DEVELOPMENT', 1)`}
+                  `tracker().reportEvent(${CATEGORY}, 'BUTTON_WAS_CLICKED', 'DEVELOPMENT', 1)`}
             />
             <Action
                 actionText={'Report page view'}
                 text={'Report navigation to another page'}
                 id="report_page1"
-                onClick={() => tracker.reportPage('MyPersonalPage', 'personal_page.html')}
+                onClick={() => tracker().reportPage('MyPersonalPage', 'personal_page.html')}
                 code={'    /**\n' +
                   '   * Reports page view\n' +
                   '   * If you run createBrowserHistory() from the "history" component, there\'s no need to report pages manually, \n' +
@@ -127,7 +127,7 @@ const Demo = () => {
                   '   * @param {string} title - reported page title\n' +
                   '   * @param {string} page - page url\n' +
                   '   */\n' +
-                  'tracker.reportPage(\'MyPersonalPage\', \'personal_page.html\')'}
+                  'tracker().reportPage(\'MyPersonalPage\', \'personal_page.html\')'}
             />
             <div className="action">
                 <div style={{display: 'flex'}}>
@@ -170,13 +170,13 @@ const Demo = () => {
                 actionText={'Report an exception manually'}
                 text={'Report exception'}
                 id="report_exception"
-                onClick={() => tracker.reportException('Error occurred while loading...', true)}
+                onClick={() => tracker().reportException('Error occurred while loading...', true)}
                 code={'    /**\n' +
                   '   * Reporting an execution exception to GA\n' +
                   '   * @param {string} exDescription\n' +
                   '   * @param {boolean} isFatal\n' +
                   '   */\n' +
-                  'tracker.reportException(\'Error occurred while loading...\', true)'}
+                  'tracker().reportException(\'Error occurred while loading...\', true)'}
             />
         </div>
     );};

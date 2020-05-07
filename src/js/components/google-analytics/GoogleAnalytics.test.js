@@ -62,25 +62,26 @@ googleAnalyticsInit('123', 'tracker', history, '.*localhost.*');
 // });
 
 describe('reporting events', function () {
-    const gaReportActionSpy = jest.spyOn(tracker, 'reportAction');
+    let _tracker = tracker();
+    const gaReportActionSpy = jest.spyOn(_tracker, 'reportAction');
 
     afterEach(() => {
         gaReportActionSpy.mockReset();
     });
 
     it('should validate that ga function is called when reporting event', function () {
-        tracker.reportAction('CATEGORY', 'ACTION', 'label', 1);
+        _tracker.reportAction('CATEGORY', 'ACTION', 'label', 1);
         expect(gaReportActionSpy)
             .toHaveBeenCalled();
     });
 
     it('should validate that ga function is called when reporting reportHumanAction', function () {
-        tracker.reportHumanAction('ACTION', 'label', 1);
+        _tracker.reportHumanAction('ACTION', 'label', 1);
         expect(gaReportActionSpy)
             .toHaveBeenCalled();
     });
     it('should validate that ga function is called when reporting reportMachineAction', function () {
-        tracker.reportMachineAction('ACTION', 'label', 1);
+        _tracker.reportMachineAction('ACTION', 'label', 1);
         expect(gaReportActionSpy)
             .toHaveBeenCalled();
     });
@@ -89,14 +90,15 @@ describe('reporting events', function () {
 });
 
 describe('reporting exception', function () {
-    const gaReportExceptionSpy = jest.spyOn(tracker, 'reportException');
+    let _tracker = tracker();
+    const gaReportExceptionSpy = jest.spyOn(_tracker, 'reportException');
 
     afterEach(() => {
         gaReportExceptionSpy.mockReset();
     });
 
     it('should validate that ga function is called when reporting event', function () {
-        tracker.reportException('error', true);
+        _tracker.reportException('error', true);
         expect(gaReportExceptionSpy)
             .toHaveBeenCalled();
     });
