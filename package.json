@@ -15,7 +15,10 @@
     "test": "jest --coverage --config jest.json",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "badges": "jest-coverage-badges --input 'build/test-coverage/ui/coverage-summary.json' --output 'badges'"
+    "badges": "jest-coverage-badges --input 'build/test-coverage/ui/coverage-summary.json' --output 'badges'",
+    "publish:major":"npm version major && npm publish",
+    "publish:minor":"npm version minor && npm publish",
+    "publish:patch":"npm version patch && npm publish"
   },
   "repository": {
     "type": "git",
