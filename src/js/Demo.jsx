@@ -68,6 +68,10 @@ const Demo = () => {
         <div className="demo">
             <h1>@impervaos/google-analytics-spa demo</h1>
             <h3>This page demonstrates the usage of the component</h3>
+            <p style={{backgroundColor:'yellow', border:'solid 1px', padding:'5px'}}>
+                {'Open DevTools (F12) > Network > Other. ' +
+                 'Requests labeled \'collect\' are the ones sent to google analytics'}
+            </p>
             <h2 style={{fontWeight: 'bold'}}>Install</h2>
             <pre>
                 <code className={'language-bash'}>{'$ npm i @impervaos/google-analytics-spa'}</code>
