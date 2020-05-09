@@ -1,6 +1,7 @@
 [![contributions welcome](https://img.shields.io/badge/node-8+-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
 [![contributions welcome](https://img.shields.io/badge/HTML-5-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
 [![contributions welcome](./badges/badge-lines.svg)]()
+![coverage](https://github.com/imperva/google-analytics-spa/workflows/tests/badge.svg)
 
 # Google Analytics reporter
 
