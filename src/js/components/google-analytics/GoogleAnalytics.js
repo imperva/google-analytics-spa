@@ -17,6 +17,7 @@ function hash(length) {
 
     return text;
 }
+
 //
 // function getEnteriesByName(name, type) {
 //     const perf = (type)
@@ -38,7 +39,7 @@ function getLastPerformanceEntryByName(name, type) {
     return null;
 }
 
-function sendDownloadTime(trackerName, entry, category, label = '') {
+function sendDownloadTime(trackerName, entry, category = Configs.ga.categories.DEFAULT_DOWNLOAD_TIME, label = '') {
     ga(`${trackerName}.set`, EPOCH_DIM, Date.now()); // utc epoch
     ga(`${trackerName}.send`, {
         hitType: 'timing',
@@ -50,7 +51,7 @@ function sendDownloadTime(trackerName, entry, category, label = '') {
     });
 }
 
-function sendServerWaitingTime(trackerName, entry, category, label = '') {
+function sendServerWaitingTime(trackerName, entry, category = Configs.ga.categories.DEFAULT_WAITING_TIME, label = '') {
     ga(`${trackerName}.set`, EPOCH_DIM, Date.now()); // utc epoch
     ga(`${trackerName}.send`, {
         hitType: 'timing',
@@ -62,7 +63,7 @@ function sendServerWaitingTime(trackerName, entry, category, label = '') {
     });
 }
 
-function sendDurationTime(trackerName, entry, category, label = '') {
+function sendDurationTime(trackerName, entry, category = Configs.ga.categories.DEFAULT_DURATION_TIME, label = '') {
     ga(`${trackerName}.set`, EPOCH_DIM, Date.now()); // utc epoch
     ga(`${trackerName}.send`, {
         hitType: 'timing',
@@ -105,28 +106,62 @@ function sendFirstPaintEvent(trackerName, list, observer) {
 function bindToFirstPaint(trackerName) {
     const performanceObserver = new PerformanceObserver(sendFirstPaintEvent.bind(this, trackerName));
 
-    performanceObserver.observe({ entryTypes: ['paint'] });
+    performanceObserver.observe({entryTypes: ['paint']});
 }
 
 /**
  * This function is used to automatically report performance of your REST calls to google analytics
- * @param {string} allowOnlyRegex - Only requests whos URL matches this regex would be reported. Reports nothing if left empty;
+ * @param config - {string | object}
+ *  *     if string  - allowOnlyRegex - Only requests whos URL matches this regex would be reported.
+ *                  Reports everything if left empty;
+ *      if object - {
+ *          include {string}: allowOnlyRegex - Only requests whos URL matches this regex would be reported.
+ *          Default - allow all
+ *
+ *          initiatorTypes {array}: Only requests who's type matches this strings would be reported.
+ *          Example: ['xmlhttprequest','fetch'] - to filter out only fetch and XMLHttpRequest calls
+ *          Default: [] - i.e. do not filter anything
+ *          See types here: https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/initiatorType
+ *
+ *          category function {(entry) -> string}: The result of this function will be sent as category of timing event
+ *          Example: entry => entry.name+'-1' would result in category name: 'www.acme.com-1'
+ *          Default: 'DOWNLOAD_TIME','SERVER_WAITING_TIME','DURATION_TIME' respectively
+ *      }
  */
-function bindToRequestsPerformance(allowOnlyRegex) {
-    if (isEmpty(allowOnlyRegex)) {
-        //TODO test this
-        this.performanceFilterRegex = /.*/; //allow everyone
-    } else {
-        this.performanceFilterRegex = allowOnlyRegex;
+//TODO test this function
+function bindToRequestsPerformance(config) {
+    const GOOGLE_ANALYTICS_URL = /.*google-analytics.*collect.*/i; //disallow responding on GA requests in any case
+    let performanceFilterRegex = /.*/; //allow everyone
+    let categoryFormatFunction = () => undefined; //we return null here in order to have defaults set as category in every perf rep. func.
+    let initiatorTypes = [];
+
+    //in order to have backward compatibility we allow to pass string and object
+    if(!isEmpty(config)) {
+        if ( typeof config === 'string') {
+            performanceFilterRegex = config;
+        }
+        else {
+            if(!isEmpty(config.include)) {
+                performanceFilterRegex = config.include;
+            }
+            if(!isEmpty(config.category)) {
+                categoryFormatFunction = config.category;
+            }
+            if(!isEmpty(config.initiatorTypes) && Array.isArray(config.initiatorTypes)) {
+                initiatorTypes = config.initiatorTypes;
+            }
+        }
     }
 
     this.performanceObserver = new PerformanceObserver((list) => {
         list.getEntries()
-            .filter((entry) => entry.name.match(this.performanceFilterRegex))
+            .filter(entry => !entry.name.match(GOOGLE_ANALYTICS_URL))
+            .filter(entry => entry.name.match(performanceFilterRegex))
+            .filter(entry => isEmpty(initiatorTypes) || initiatorTypes.includes(entry.initiatorType))
             .forEach((entry) => {
-                sendDownloadTime(this.trackerName, entry, Configs.ga.categories.DEFAULT_DOWNLOAD_TIME);
-                sendServerWaitingTime(this.trackerName, entry, Configs.ga.categories.DEFAULT_WAITING_TIME);
-                sendDurationTime(this.trackerName, entry, Configs.ga.categories.DEFAULT_DURATION_TIME);
+                sendDownloadTime(this.trackerName, entry, categoryFormatFunction(entry));
+                sendServerWaitingTime(this.trackerName, entry, categoryFormatFunction(entry));
+                sendDurationTime(this.trackerName, entry, categoryFormatFunction(entry));
             });
     });
 
@@ -158,11 +193,10 @@ export class GaTracker {
     constructor(trackerId, trackerName, gaProperties = {}, gaDimensions = {}) {
         this.lastResource = 0;
         this.lastMeasure = 0;
-        this.performanceFilterRegex = '';
 
         if (!trackerId) {
             throw new Error('Google Analytics tracker must receive an id! (pattern: UA-XXXXXX-xx)'
-                          + '\nId can be located at your google analytics site: https://analytics.google.com');
+                            + '\nId can be located at your google analytics site: https://analytics.google.com');
         }
 
         // just in case that tracker name was not provided
@@ -170,13 +204,13 @@ export class GaTracker {
 
 
         // https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
-        const properties = Object.assign( {
-            name:                trackerName,
-            cookieDomain:        'auto',
-            sampleRate:          100, // Specifies what percentage of users should be tracked
+        const properties = Object.assign({
+            name: trackerName,
+            cookieDomain: 'auto',
+            sampleRate: 100, // Specifies what percentage of users should be tracked
             siteSpeedSampleRate: 100, // This setting determines how often site speed tracking beacons will be sent,
-            alwaysSendReferrer:  false, // Enable this setting only if you want to process other pages from your current host as referrals
-        }, gaProperties );
+            alwaysSendReferrer: false, // Enable this setting only if you want to process other pages from your current host as referrals
+        }, gaProperties);
 
 
         ga('create', trackerId, properties);
@@ -188,19 +222,19 @@ export class GaTracker {
 
 
     /**
-   * Sets user id inside the object and also inside the tracker
-   * @param {string} identifier - identifier that is used to identify this specific user across multiple sessions and / or devices
-   */
+     * Sets user id inside the object and also inside the tracker
+     * @param {string} identifier - identifier that is used to identify this specific user across multiple sessions and / or devices
+     */
     setUserId(identifier) {
         ga(`${this.trackerName}.set`, 'userId', identifier);
     }
 
     /**
-   * Reports the whole durations of the request, from initiation to last byte receipt
-   * @param {string} category
-   * @param {string} name
-   * @param {string} label
-   */
+     * Reports the whole durations of the request, from initiation to last byte receipt
+     * @param {string} category
+     * @param {string} name
+     * @param {string} label
+     */
     reportAjaxDuration(category, name, label) {
         const entry = getLastPerformanceEntryByName(name, 'resource');
         if (!isEmpty(entry)) {
@@ -209,11 +243,11 @@ export class GaTracker {
     }
 
     /**
-   * Reports the server waiting time until download starts
-   * @param {string} category
-   * @param {string} name
-   * @param {string} label
-   */
+     * Reports the server waiting time until download starts
+     * @param {string} category
+     * @param {string} name
+     * @param {string} label
+     */
     reportAjaxWait(category, name, label) {
         const entry = getLastPerformanceEntryByName(name, 'resource');
 
@@ -223,11 +257,11 @@ export class GaTracker {
     }
 
     /**
-   * Reports the resource download time
-   * @param {string} category
-   * @param {string} name
-   * @param {string} label
-   */
+     * Reports the resource download time
+     * @param {string} category
+     * @param {string} name
+     * @param {string} label
+     */
     reportAjaxDownload(category, name, label) {
         const entry = getLastPerformanceEntryByName(name, 'resource');
         if (!isEmpty(entry)) {
@@ -236,33 +270,33 @@ export class GaTracker {
     }
 
     /**
-   * Wrapper for action report performed by human
-   * Automatically sets tha category to CATEGORY_HUMAN
-   * @param {Object} action - action performed
-   * @param {string} label - label of the action
-   * @param {number} value - value of hte action (in $)
-   */
+     * Wrapper for action report performed by human
+     * Automatically sets tha category to CATEGORY_HUMAN
+     * @param {Object} action - action performed
+     * @param {string} label - label of the action
+     * @param {number} value - value of hte action (in $)
+     */
     reportHumanAction(action, label, value) {
         this.reportAction(Configs.ga.categories.CATEGORY_HUMAN, action, label, value);
     }
 
     /**
-   * Wrapper for action report performed by the system
-   * Automatically sets tha category to CATEGORY_MACHINE
-   * @param {Object} action - action performed
-   * @param {string} label - label of the action
-   * @param {number} value - value of hte action (in $)
-   */
+     * Wrapper for action report performed by the system
+     * Automatically sets tha category to CATEGORY_MACHINE
+     * @param {Object} action - action performed
+     * @param {string} label - label of the action
+     * @param {number} value - value of hte action (in $)
+     */
     reportMachineAction(action, label, value) {
         this.reportAction(Configs.ga.categories.CATEGORY_MACHINE, action, label, value);
     }
 
     /**
-   * Reports page view
-   * Usually there's no need to report pages manually, since this feature is turned on automatically
-   * @param {string} title - reported page title
-   * @param {string} page - page url
-   */
+     * Reports page view
+     * Usually there's no need to report pages manually, since this feature is turned on automatically
+     * @param {string} title - reported page title
+     * @param {string} page - page url
+     */
     reportPage(title, page = window.location.pathname) {
         try {
             ga(`${this.trackerName}.set`, EPOCH_DIM, Date.now()); // utc epoch
@@ -278,12 +312,12 @@ export class GaTracker {
     }
 
     /**
-   * Reporting an action performed
-   * @param {string} category - action category
-   * @param {Object} action - action itself
-   * @param {string} label - label of an action
-   * @param {number} value - $ value of the action
-   */
+     * Reporting an action performed
+     * @param {string} category - action category
+     * @param {Object} action - action itself
+     * @param {string} label - label of an action
+     * @param {number} value - $ value of the action
+     */
     reportAction(category, action, label = '', value) {
         try {
             ga(`${this.trackerName}.set`, EPOCH_DIM, Date.now()); // utc epoch
@@ -312,10 +346,10 @@ export class GaTracker {
     }
 
     /**
-   * Reporting an exception to GA
-   * @param {string} exDescription
-   * @param {boolean} isFatal
-   */
+     * Reporting an exception to GA
+     * @param {string} exDescription
+     * @param {boolean} isFatal
+     */
     reportException(exDescription, isFatal) {
         try {
             ga(`${this.trackerName}.set`, EPOCH_DIM, Date.now()); // utc epoch
@@ -337,19 +371,19 @@ export class GaTracker {
  * @param {string} trackerId - Id of your app defined in Google analytics account, usually starts with UA-
  * @param {string} trackerName - a name to represent a GA tracker. Useful if you want to have 2 separate GA trackers
  * @param {Object} history - history object. we are using https://www.npmjs.com/package/history
- * @param {string} performanceInclude - used for REST performance logging purposes. Only pages who's url matches the regex will be reported.
+ * @param {string} performanceConfig - used for REST performance logging purposes. Only pages who's url matches the regex will be reported.
  * if left empty will not report anything
  * @param gaProperties - list of google analytics field properties https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
  * @param gaDimensions - list of custom dimensions https://support.google.com/analytics/answer/2709829?hl=en
  * @return {GaTracker} - the singleton object through which reporting is made
  */
-export function googleAnalyticsInit(trackerId, trackerName, history, performanceInclude = null, gaProperties = {}, gaDimensions = {}) {
+export function googleAnalyticsInit(trackerId, trackerName, history, performanceConfig = null, gaProperties = {}, gaDimensions = {}) {
     try {
         _tracker = new GaTracker(trackerId, trackerName, gaProperties, gaDimensions);
         if (history) {
             bindToBrowserHistory.call(_tracker, history);
         }
-        bindToRequestsPerformance.call(_tracker, performanceInclude);
+        bindToRequestsPerformance.call(_tracker, performanceConfig);
         bindToFirstPaint.call(_tracker, trackerName);
     } catch (e) {
         console.error('failed to load google analytics. GA will not work', e);
@@ -378,7 +412,7 @@ export function tracker() {
  * @return {{virtualPath: *, isVirtualPathOnly: boolean, title: *}}
  */
 export function gaBuildPageViewState(title, virtualPath, isVirtualPathOnly = false) {
-    return { title, virtualPath, isVirtualPathOnly };
+    return {title, virtualPath, isVirtualPathOnly};
 }
 
 // The type of hit. Must be one of 'pageview', 'screenview', 'event', 'transaction', 'item', 'social', 'exception', 'timing'.

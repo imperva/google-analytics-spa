@@ -54,9 +54,14 @@ const history = createBrowserHistory({ basename: '' });
 const myGaApplicationId = 'UA-XXXXXXX-XX'; 
 //[OPTIONAL] The name of your tracker, in case you will be using multiple trackers
 const myTrackerName = 'MyTrackerName';
-//report performance of pages that match this regex
+//--------------------
+//performance reporting configuration
+// it can be either regex - and then only the requests whos urls can be matched using this regex will be reported
 //for example: if my backend requests go to http://some.com/api/v1/getMyData we would set this parameter to /.*api\/v1/
-const performanceRegex = /.*/i;
+// OR it can be an object {include: {regex}, initi: [{string}...{string}], category: {function}} 
+//  *          See types here: https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/initiatorType
+
+const performanceRegex = {include: /.*my_api.*/i, initiatorTypes: ['xmlhttprequest','fetch'], category: e => e.name.replace('.','_')};
 
 //every request will also piggyback these dimensions with it
 //For example: user email or any other custom dimension that you need to better track your application usage
@@ -228,7 +233,7 @@ Run this function as soon as possible in your code in order to initialize google
 -   `trackerId` **[string][31]** Id of your app defined in Google analytics account, usually starts with UA-
 -   `trackerName` **[string][31]** a name to represent a GA tracker. Useful if you want to have 2 separate GA trackers
 -   `history` **[Object][32]** history object. we are using [https://www.npmjs.com/package/history][35]
--   `performanceAllowOnlyRegex` **[string][31]** used for REST performance logging purposes. Only pages who's url matches the regex will be reported.
+-   `performanceAllowOnlyRegex` **[string | object]** used for REST performance logging purposes. Only pages who's url matches the regex will be reported.
     if left empty will not report anything (optional, default `null`)
 -   `gaProperties` **[Object][32]** ga properties including the userId property.
 -   `gaDimesions` **[Object][32]** ga dimensions object with key value pairs of dimensions (dimension1, dimension2...) to report every time

@@ -11,6 +11,7 @@
     "dev": "npm start",
     "build": "webpack --env.production --progress  --config webpack.prod.config.js",
     "build:ci": "npm i && npm run test && npm run build && npm run badges",
+    "build:maps": "npm run build -- --env.withMaps",
     "build:analyze": "npm run build -- --env.analyze --json > build.stats.json",
     "test": "jest --coverage --config jest.json",
     "test:watch": "jest --watch",

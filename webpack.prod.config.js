@@ -10,6 +10,7 @@ const webpackBaseConfig = require('./webpack.base.config');
 console.log('\x1b[36m%s\x1b[0m', 'Running production build...');
 
 const webpackConfig = (env, args) => {
+    const useMaps = !env.withMaps ? 'none' : 'eval-source-map';
     const webpackConfig = merge(webpackBaseConfig(env),
                                 {
                                     entry: './src/js/index.js',
@@ -57,6 +58,12 @@ const webpackConfig = (env, args) => {
                                                           port: 7000,
                                                       }));
     }
+
+    //will create production build with maps. In order to be able to debug on stage or prod etc
+    if (env.withMaps) {
+        webpackConfig.devtool = useMaps;
+    }
+
 
     return webpackConfig;
 };
