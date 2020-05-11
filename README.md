@@ -2,7 +2,7 @@
 [![contributions welcome](https://img.shields.io/badge/HTML-5-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
 [![contributions welcome](./badges/badge-lines.svg)]()
 ![coverage](https://github.com/imperva/google-analytics-spa/workflows/tests/badge.svg)
-
+[![Known Vulnerabilities](https://snyk.io/test/github/imperva/google-analytics-spa/badge.svg?targetFile=package.json)](https://snyk.io/test/github/imperva/google-analytics-spa?targetFile=package.json)
 # Google Analytics reporter
 
 This library was created with Single Page Application architecture in mind.
