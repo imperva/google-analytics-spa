@@ -1,8 +1,8 @@
 [![downloads per month](https://img.shields.io/npm/dm/@impervaos/google-analytics-spa.svg)](https://www.npmjs.com/package/@impervaos/google-analytics-spa)
 [![node ver](https://img.shields.io/badge/node-8+-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
 [![html5](https://img.shields.io/badge/HTML-5-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
-[![coverage](./badges/badge-lines.svg)]
-[![tests](https://github.com/imperva/google-analytics-spa/workflows/tests/badge.svg)]
+![coverage](./badges/badge-lines.svg)
+![tests](https://github.com/imperva/google-analytics-spa/workflows/tests/badge.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/imperva/google-analytics-spa/badge.svg?targetFile=package.json)](https://snyk.io/test/github/imperva/google-analytics-spa?targetFile=package.json)
 # Google Analytics reporter
 
