@@ -1,4 +1,4 @@
-[![downloads per month](https://img.shields.io/npm/dm/money-clip.svg)](https://www.npmjs.com/package/@impervaos/google-analytics-spa)
+[![downloads per month](https://img.shields.io/npm/dm/@impervaos/google-analytics-spa.svg)](https://www.npmjs.com/package/@impervaos/google-analytics-spa)
 [![node ver](https://img.shields.io/badge/node-8+-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
 [![html5](https://img.shields.io/badge/HTML-5-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
 [![coverage](./badges/badge-lines.svg)]()
