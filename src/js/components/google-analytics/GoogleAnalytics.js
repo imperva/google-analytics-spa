@@ -182,7 +182,7 @@ function bindToBrowserHistory(history) {
         const virtualPath = isEmpty(location.state) || isEmpty(location.state.virtualPath) ? '' : location.state.virtualPath;
         const pageTitle = isEmpty(location.state) || isEmpty(location.state.title) ? '' : location.state.title;
         const combinedPath = isEmpty(location.state) || isEmpty(location.state.isVirtualPathOnly) || !location.state.isVirtualPathOnly
-            ? (`${window.location.pathname}/${virtualPath}`).replace('//', '/')
+            ? (`${location.pathname}/${virtualPath}`).replace('//', '/')
             : virtualPath;
 
         this.reportPage(pageTitle, combinedPath);
@@ -380,13 +380,25 @@ export class GaTracker {
 export function googleAnalyticsInit(trackerId, trackerName, history, performanceConfig = null, gaProperties = {}, gaDimensions = {}) {
     try {
         _tracker = new GaTracker(trackerId, trackerName, gaProperties, gaDimensions);
-        if (history) {
+
+        if (!isEmpty(history)) {
             bindToBrowserHistory.call(_tracker, history);
+        } else {
+            console.warn('history dependency was not found. \n' +
+                         'Automatic page navigation will not be reported.\n' +
+                         'You can still report page navigation using: report().reportPage(my-title, my-path)');
         }
-        bindToRequestsPerformance.call(_tracker, performanceConfig);
-        bindToFirstPaint.call(_tracker, trackerName);
+
+        if(!isEmpty(PerformanceObserver)) {
+            bindToRequestsPerformance.call(_tracker, performanceConfig);
+            bindToFirstPaint.call(_tracker, trackerName);
+        } else {
+            console.warn('PerformanceObserver is not supported on this browser.\n' +
+                         ' Automatic performance will not be reported.');
+        }
+
     } catch (e) {
-        console.error('failed to load google analytics. GA will not work', e);
+        console.error('failed to load @impervaos/google-analytics-spa. It will not work due to: ', e);
         _tracker = new GaTracker('invalid-id', '', gaProperties, gaDimensions);
     } finally {
         window.__GA_TRACKER__ = _tracker;
