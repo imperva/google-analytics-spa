@@ -125,7 +125,7 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 ## API
 <!-- MARKDOWN-MAGIC:START (JSDOC:files=./src/js/components/google-analytics/GoogleAnalytics.js&module-index-format=none&global-index-format=none&heading-depth=4&separators=true&param-list-format=list) -->
 
-#### gaTracker.setUserId(identifier)
+#### setUserId(identifier)
 **Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Manually set user id  
 **Access**: public  
@@ -138,7 +138,7 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 
 <a name="GaTracker+reportLastRequestDuration"></a>
 
-#### gaTracker.reportLastRequestDuration(category, requestUrl, label)
+#### reportLastRequestDuration(category, requestUrl, label)
 **Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Manually report the duration of last sent request<br>duration = request initiation until last byte receipt  
 **Access**: public  
@@ -153,7 +153,7 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 
 <a name="GaTracker+reportLastRequestWait"></a>
 
-#### gaTracker.reportLastRequestWait(category, requestUrl, label)
+#### reportLastRequestWait(category, requestUrl, label)
 **Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Reports the server waiting time until download starts  
 **Access**: public  
@@ -168,7 +168,7 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 
 <a name="GaTracker+reportLastRequestDownloadTime"></a>
 
-#### gaTracker.reportLastRequestDownloadTime(category, requestUrl, label)
+#### reportLastRequestDownloadTime(category, requestUrl, label)
 **Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Reports the resource download time  
 **Access**: public  
@@ -183,7 +183,7 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 
 <a name="GaTracker+reportPage"></a>
 
-#### gaTracker.reportPage(title, page)
+#### reportPage(title, page)
 **Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Access**: public  
 **Params**
@@ -196,7 +196,7 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 
 <a name="GaTracker+reportException"></a>
 
-#### gaTracker.reportException(exDescription, isFatal)
+#### reportException(exDescription, isFatal)
 **Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Reporting a code exception to GA  
 **Access**: public  
