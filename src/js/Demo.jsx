@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Prism from 'prismjs';
 import randomName from 'random-name';
-import {createBrowserHistory} from 'history';
+import {createHashHistory} from 'history';
 import {tracker, googleAnalyticsInit} from './components/google-analytics/GoogleAnalytics';
 import 'prismjs/themes/prism.css';
 import './Demo.scss';
@@ -18,7 +18,7 @@ const TRACKED_USERID = 'user@user.com';
 /*run this function as soon as possible in your application, but after the google-analytics.js script was run*/
 googleAnalyticsInit(GOOGLE_ANALYTICS_ACCOUNT,
     TRACKER_NAME,
-    createBrowserHistory(),
+    createHashHistory(),
     {
         include: /.*reqres.in.*/i,
         initiatorTypes: null,
@@ -30,8 +30,8 @@ googleAnalyticsInit(GOOGLE_ANALYTICS_ACCOUNT,
         userId: TRACKED_USERID,
     },
     {
-        dimension1: 'value1',
-        dimension2: 'value2',
+        dimension1: 'mydim1',
+        dimension2: 'mydim2',
     }
 );
 
