@@ -69,6 +69,12 @@
         "lib/*.js"
       ],
       "excludedFiles": "webpack*.js"
+    },
+    {
+      "files": [
+        "*.test.js"
+      ],
+      "parser": "babel-eslint"
     }
   ]
 }

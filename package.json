@@ -72,6 +72,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-test-renderer": "^16.4.2",
+    "redux": "^4.0.5",
     "regenerator-runtime": "^0.13.3",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
