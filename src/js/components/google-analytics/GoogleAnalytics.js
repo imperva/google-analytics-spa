@@ -403,13 +403,20 @@ export class GaTracker {
  * @param {Object} [history] - history object.<br>
  *                  We advice to use https://www.npmjs.com/package/history package.<br>
  *                  If not provided, automatic reporting of pages navigation will not work
- * @param {(PerformanceConfig|string)} [performanceConfig] automatic performance tracking purposes.<br>Can either be regex string that filters urls that should be reported<br>Or an object of type {@link PerformanceConfig}
- * @param {Object} [gaProperties] - list of google analytics field properties<br>https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
+ * @param {(PerformanceConfig|string)} [performanceConfig] automatic performance tracking purposes.
+ * <br>Can either be regex string that filters urls that should be reported<br>Or an object of type {@link PerformanceConfig}
+ * @param {Object} [gaProperties] - list of google analytics field properties
+ * <br>https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
  * @param {Object} [gaDimensions] - list of custom dimensions<br>https://support.google.com/analytics/answer/2709829?hl=en
  *
  * @return {GaTracker} pointer to the singleton object through which reporting is made
  */
-export function googleAnalyticsInit(trackerId, trackerName, history, performanceConfig = null, gaProperties = {}, gaDimensions = {}) {
+export function googleAnalyticsInit(trackerId,
+    trackerName,
+    history,
+    performanceConfig = null,
+    gaProperties = {},
+    gaDimensions = {}) {
     try {
         _tracker = new GaTracker(trackerId, trackerName, gaProperties, gaDimensions);
         if (!isEmpty(history)) {
