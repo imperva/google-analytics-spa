@@ -162,10 +162,7 @@ function bindToBrowserHistory(history) {
 }
 
 /**
- * @class
- * @alias tracker()
- * @static
- * @kind Google Analytics reporting object (singleton)
+ * @public
  */
 export class GaTracker {
     constructor(trackerId, trackerName, gaProperties = {}, gaDimensions = {}) {

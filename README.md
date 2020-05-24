@@ -125,9 +125,21 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 ## API
 <!-- MARKDOWN-MAGIC:START (JSDOC:files=./src/js/components/google-analytics/GoogleAnalytics.js&module-index-format=none&global-index-format=none&heading-depth=4&separators=true&param-list-format=list) -->
 
-#### setUserId(identifier)
-**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
-**Summary**: Manually set user id  
+#### tracker().reportEvent
+**Summary**: Reporting an event performed  
+**Access**: public  
+**Params**
+
+- category <code>string</code> - event category
+- action <code>string</code> - event name
+- label <code>string</code> - label of the event
+- value <code>number</code> - how much this event worth (usually in USD)
+
+
+* * *
+
+#### tracker().setUserId(identifier)
+**Summary**: (Usually should not be used) Manually set user id (might be overriden by next requests)  
 **Access**: public  
 **Params**
 
@@ -136,10 +148,9 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 
 * * *
 
-<a name="GaTracker+reportLastRequestDuration"></a>
+#### tracker().reportLastRequestDuration(category, requestUrl, label)
+Not required by default
 
-#### reportLastRequestDuration(category, requestUrl, label)
-**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Manually report the duration of last sent request<br>duration = request initiation until last byte receipt  
 **Access**: public  
 **Params**
@@ -151,10 +162,9 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 
 * * *
 
-<a name="GaTracker+reportLastRequestWait"></a>
+#### tracker().reportLastRequestWait(category, requestUrl, label)
+Not required by default
 
-#### reportLastRequestWait(category, requestUrl, label)
-**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Reports the server waiting time until download starts  
 **Access**: public  
 **Params**
@@ -166,10 +176,9 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 
 * * *
 
-<a name="GaTracker+reportLastRequestDownloadTime"></a>
+#### tracker().reportLastRequestDownloadTime(category, requestUrl, label)
+Not required by default
 
-#### reportLastRequestDownloadTime(category, requestUrl, label)
-**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Reports the resource download time  
 **Access**: public  
 **Params**
@@ -181,10 +190,9 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 
 * * *
 
-<a name="GaTracker+reportPage"></a>
+#### tracker().reportPage(title, page)
+Not required by default, if you are using 'history' package
 
-#### reportPage(title, page)
-**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Access**: public  
 **Params**
 
@@ -194,32 +202,13 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 
 * * *
 
-<a name="GaTracker+reportException"></a>
-
-#### reportException(exDescription, isFatal)
-**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
+#### tracker().reportException(exDescription, isFatal)
 **Summary**: Reporting a code exception to GA  
 **Access**: public  
 **Params**
 
 - exDescription <code>string</code> - what happened
 - isFatal <code>boolean</code> - was the exception fatal to your code or not
-
-
-* * *
-
-<a name="reportEvent"></a>
-
-#### reportEvent(category, action, label, value)
-**Kind**: global function  
-**Summary**: Reporting an event performed  
-**Access**: public  
-**Params**
-
-- category <code>string</code> - event category
-- action <code>string</code> - event name
-- label <code>string</code> - label of the event
-- value <code>number</code> - how much this event worth (usually in USD)
 
 
 * * *
@@ -238,8 +227,10 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 - [history] <code>Object</code> - history object.<br>
                  We advice to use https://www.npmjs.com/package/history package.<br>
                  If not provided, automatic reporting of pages navigation will not work
-- [performanceConfig] [<code>PerformanceConfig</code>](#PerformanceConfig) | <code>string</code> - automatic performance tracking purposes.<br>Can either be regex string that filters urls that should be reported<br>Or an object of type [PerformanceConfig](#PerformanceConfig)
-- [gaProperties] <code>Object</code> - list of google analytics field properties<br>https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
+- [performanceConfig] [<code>PerformanceConfig</code>](#PerformanceConfig) | <code>string</code> - automatic performance tracking purposes.
+<br>Can either be regex string that filters urls that should be reported<br>Or an object of type [PerformanceConfig](#PerformanceConfig)
+- [gaProperties] <code>Object</code> - list of google analytics field properties
+<br>https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
 - [gaDimensions] <code>Object</code> - list of custom dimensions<br>https://support.google.com/analytics/answer/2709829?hl=en
 
 
