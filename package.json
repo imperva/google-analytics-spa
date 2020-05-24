@@ -64,7 +64,7 @@
     "jest-junit": "^10.0.0",
     "markdown-magic": "^1.0.0",
     "markdown-magic-jsdoc": "^1.0.1",
-    "node-sass": "^4.14.0",
+    "node-sass": "^4.14.1",
     "peer-deps-externals-webpack-plugin": "^1.0.4",
     "prismjs": "^1.20.0",
     "prop-types": "^15.7.2",
@@ -83,7 +83,7 @@
     "webpack": "^4.41.5",
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.1",
+    "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^4.2.2",
     "webpack-monitor": "^1.0.14",
     "whatwg-fetch": "^3.0.0"
