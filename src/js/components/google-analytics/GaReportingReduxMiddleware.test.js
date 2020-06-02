@@ -1,4 +1,3 @@
-import isEmpty from 'is-empty';
 import {createStore, applyMiddleware} from 'redux';
 import GaReportingReduxMiddleware from './ReduxGaMiddleware';
 import {validateReportEventResult} from './GoogleAnalytics.events.test';
@@ -33,7 +32,7 @@ class ReduxActions {
         };
     }
 
-    @reportGoogleAnalytics('REDUX2', 'JUST_DO_IT')
+    @reportGoogleAnalytics('REDUX2', null, 'JUST_DO_IT')
     static reduxActionAnnotatedWithActionName() {
         return {
             type: ACTION_NAME

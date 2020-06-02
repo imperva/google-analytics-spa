@@ -4,18 +4,19 @@
 ![coverage](./badges/badge-lines.svg)
 ![tests](https://github.com/imperva/google-analytics-spa/workflows/tests/badge.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/imperva/google-analytics-spa/badge.svg?targetFile=package.json)](https://snyk.io/test/github/imperva/google-analytics-spa?targetFile=package.json)
-# Google Analytics reporter
+# Google Analytics automatic reporter
 
 This library was created with Single Page Application architecture in mind.
 Its goal is to provide as simple as possible usage of Google Analytics for SPAs (Single Page Applications).
 
 #### Some of its features that come virtually without any "price tag" are
-* Reporting of virtual navigation (based on HTML5 history object) including reporting page alias and not the actual url 
-* Your REST call & navigation performance to GA - so you could monitor download, server and duration times.  
-* Reports the "time to first paint" for your application - i.e. how fast the users see the first meaningful page of your application (and not a blank page)
-* Reporting any redux action to GA using 'reportGoogleAnalytics' decorator (annotation)
+* **AUTOMATIC** reporting of virtual navigation (based on HTML5 history object) including reporting page alias and not the actual url 
+* **AUTOMATICALLY** reports your REST call & navigation performance to GA - so you could monitor download, server and duration times.  
+* **AUTOMATICALLY** reports the "time to first paint" for your application - i.e. how fast the users see the first meaningful page of your application (and not a blank page)
+* Reporting any Redux action **AUTOMATICALLY** to GA using 'reportGoogleAnalytics' decorator and 'GaReportingReduxMiddleware' middleware
 * Easily report events / pageviews / performance values 
 * Written in plain javascript, i.e. ReactJs, Angular, Vue or anything else that can run JS
+
 ## Live demo
 [Play with our live demo](https://04zjb.sse.codesandbox.io/)
 
@@ -121,6 +122,38 @@ tracker().reportPage( 'my site title', 'http://page.com/first' );
 history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true ) );
 ```
 <!-- MARKDOWN-MAGIC:END -->
+
+##Usage with Redux 
+```js
+import {reportGoogleAnalytics, GaReportingReduxMiddleware} from '@impervaos/google-analytics-spa';
+const store = createStore(state => state, applyMiddleware(GaReportingReduxMiddleware));
+
+//In order to use this annotation your code need to be able to process annotations
+//So you might want to use something like https://babeljs.io/docs/en/babel-plugin-proposal-decorators
+//In the future the decorators will be part of ES
+
+class ReduxActions {
+    @reportGoogleAnalytics('MyCategory', null, 'my label', 1)
+    static doSomethingWithAnnotation() {
+        return {
+            type: 'DO_SOMETHING'
+        };
+    } 
+
+   static doSomething() {
+        return {
+            type: 'DO_SOMETHING_ELSE'
+        };
+    }
+}
+//When this event is dispatched, an automatic even report will be sent to Google Analytics
+//equal to: tracker().reportEvent('MyCategory','DO_SOMETHING', 'my label', 1); 
+store.dispatch(ReduxActions.doSomethingWithAnnotation());
+
+//When this event is dispatched, an automatic even report still being sent to Google Analytics
+//equal to: tracker().reportEvent('','DO_SOMETHING_ELSE', '', 0); 
+store.dispatch(ReduxActions.doSomething());
+```
 
 ## API
 <!-- MARKDOWN-MAGIC:START (JSDOC:files=./src/js/components/google-analytics/GoogleAnalytics.js&module-index-format=none&global-index-format=none&heading-depth=4&separators=true&param-list-format=list) -->
