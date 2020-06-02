@@ -7,7 +7,9 @@
 # Google Analytics automatic reporter
 
 This library was created with Single Page Application architecture in mind.
-Its goal is to provide as simple as possible usage of Google Analytics for SPAs (Single Page Applications).
+You can use it with ReactJs, Angular, Vue or just vanilla javascript code.
+Its goal is to provide as automatic as possible usage of Google Analytics for SPAs (Single Page Applications).
+_So you could free yourself to deal with other tasks_
 
 #### Some of its features that come virtually without any "price tag" are
 * **AUTOMATIC** reporting of virtual navigation (based on HTML5 history object) including reporting page alias and not the actual url 
@@ -123,7 +125,7 @@ history.push( '/test/path', gaBuildPageViewState( 'TITLE', '/virtual/path', true
 ```
 <!-- MARKDOWN-MAGIC:END -->
 
-##Usage with Redux 
+## Usage with Redux 
 ```js
 import {reportGoogleAnalytics, GaReportingReduxMiddleware} from '@impervaos/google-analytics-spa';
 const store = createStore(state => state, applyMiddleware(GaReportingReduxMiddleware));
