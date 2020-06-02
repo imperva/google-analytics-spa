@@ -71,10 +71,10 @@ describe('testing redux ga middleware', function () {
         reduxStore.dispatch(ReduxActions.reduxActionAnnotated());
     });
 
-    it('should validate event sending with annotation with action name set', function () {
-        unsubscribe = reduxStore.subscribe(() => {
-            validateReportEventResult(gaSpy, 'REDUX2', 'JUST_DO_IT', '', 0);
-        });
-        reduxStore.dispatch(ReduxActions.reduxActionAnnotatedWithActionName());
-    });
+    // it('should validate event sending with annotation with action name set', function () {
+    //     unsubscribe = reduxStore.subscribe(() => {
+    //         validateReportEventResult(gaSpy, 'REDUX2', 'JUST_DO_IT', '', 0);
+    //     });
+    //     reduxStore.dispatch(ReduxActions.reduxActionAnnotatedWithActionName());
+    // });
 });
