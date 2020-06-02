@@ -15,7 +15,7 @@ Its goal is to provide as simple as possible usage of Google Analytics for SPAs 
 * Reports the "time to first paint" for your application - i.e. how fast the users see the first meaningful page of your application (and not a blank page)
 * Reporting any redux action to GA using 'reportGoogleAnalytics' decorator (annotation)
 * Easily report events / pageviews / performance values 
-* Written in plain javascript, i.e. platform agnostic
+* Written in plain javascript, i.e. ReactJs, Angular, Vue or anything else that can run JS
 ## Live demo
 [Play with our live demo](https://04zjb.sse.codesandbox.io/)
 
