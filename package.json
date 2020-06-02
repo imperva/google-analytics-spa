@@ -1,9 +1,28 @@
 {
   "name": "@impervaos/google-analytics-spa",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Automatic Google Analytics reporting for your single page application, used with Redux in React, Angular, Vue",
-  "keywords": ["google","analytics","React","redux","middleware","ReactJS","GA","javascript","Google Analytics",
-    "Angular","Vue","mobx","single","page","application","report","user","behavior","Universal Analytics"],
+  "keywords": [
+    "google",
+    "analytics",
+    "React",
+    "redux",
+    "middleware",
+    "ReactJS",
+    "GA",
+    "javascript",
+    "Google Analytics",
+    "Angular",
+    "Vue",
+    "mobx",
+    "single",
+    "page",
+    "application",
+    "report",
+    "user",
+    "behavior",
+    "Universal Analytics"
+  ],
   "main": "lib/google-analytics-spa.min.js",
   "engines": {
     "node": ">=8.15.1"
