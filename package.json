@@ -45,7 +45,7 @@
     "url": "https://github.com/imperva/google-analytics-spa.git"
   },
   "author": "Michael Rodov",
-  "license": "ISC",
+  "license": "MIT",
   "peerDependencies": {
     "history": "^4.10.1"
   },
