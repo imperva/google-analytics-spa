@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { tracker } from '@impervaos/google-analytics-spa';
 
 function myComplicatedAction() {

@@ -1,7 +1,7 @@
-import {tracker, gaBuildPageViewState} from './GoogleAnalytics';
+import {tracker} from './GoogleAnalytics';
 
-const REPORTED_TITLE = 0;
-const REPORTED_PATH = 1;
+// const REPORTED_TITLE = 0;
+// const REPORTED_PATH = 1;
 
 //the important part here is to spy after the actual ga function, right before its send to the stratosphere
 const gaSpy = jest.spyOn(global, 'ga');

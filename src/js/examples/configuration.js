@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { googleAnalyticsInit } from '@impervaos/google-analytics-spa';
 import { createBrowserHistory } from 'history';
 

@@ -50,34 +50,35 @@
     "history": "^4.10.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.2",
-    "@babel/plugin-proposal-class-properties": "^7.7.0",
-    "@babel/plugin-proposal-decorators": "^7.7.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.7.0",
-    "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.7.1",
-    "@babel/preset-react": "^7.7.0",
+    "@babel/core": "^7.11.4",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-decorators": "^7.10.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.22",
     "@fortawesome/free-regular-svg-icons": "^5.10.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
     "@types/jest": "^24.9.0",
-    "babel-eslint": "^10.0.3",
-    "babel-loader": "^8.0.6",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
     "babel-polyfill": "^6.26.0",
     "clean-webpack-plugin": "^3.0.0",
     "core-js": "2.5.7",
     "css-loader": "^3.4.2",
     "enzyme": "3.4.4",
     "enzyme-adapter-react-16": "1.2.0",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-loader": "^3.0.3",
-    "eslint-plugin-import": "^2.20.0",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.17.0",
-    "eslint-plugin-react-hooks": "^2.3.0",
+    "eslint": "^7.7.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-react-hooks": "^4.1.0",
     "fibers": "^5.0.0",
     "history": "^4.10.1",
+    "husky": "^4.2.5",
     "jest": "^24.9.0",
     "jest-cli": "^25.5.4",
     "jest-coverage-badges": "^1.1.2",
@@ -112,5 +113,10 @@
   "dependencies": {
     "is-empty": "^1.2.0",
     "query-string": "^5.1.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run build:ci"
+    }
   }
 }

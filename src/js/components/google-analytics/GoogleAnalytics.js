@@ -1,8 +1,8 @@
 import isEmpty from 'is-empty';
 import Configs from '../../configs/configurations';
-import { hash } from '../../utils/Utils';
+import {hash} from '../../utils/Utils';
 import Texts from '../../configs/texts';
-import { getLastPerformanceEntryByName } from '../../utils/PerformanceUtils';
+import {getLastPerformanceEntryByName} from '../../utils/PerformanceUtils';
 
 
 export let _tracker;
@@ -100,10 +100,12 @@ function bindToFirstPaint(trackerName) {
  *          Default: 'DOWNLOAD_TIME','SERVER_WAITING_TIME','DURATION_TIME' respectively
  *      }
  */
+// TODO document and add example of advanced usage
 function bindToRequestsPerformance(config) {
     const GOOGLE_ANALYTICS_URL = /.*google-analytics.*collect.*/i; //disallow responding on GA requests in any case
     let performanceFilterRegex = /.*/; //allow everyone
     let categoryFormatFunction = () => undefined; //we return null here in order to have defaults set as category in every perf rep. func.
+    let labelFormatFunction = () => undefined; //we return null here in order to have defaults set as category in every perf rep. func.
     let initiatorTypes = [];
 
     //in order to have backward compatibility we allow to pass string and object
@@ -118,6 +120,10 @@ function bindToRequestsPerformance(config) {
             if (!isEmpty(config.category)) {
                 categoryFormatFunction = config.category;
             }
+            if (!isEmpty(config.label)) {
+                labelFormatFunction = config.label;
+            }
+
             if (!isEmpty(config.initiatorTypes) && Array.isArray(config.initiatorTypes)) {
                 initiatorTypes = config.initiatorTypes;
             }
@@ -125,14 +131,13 @@ function bindToRequestsPerformance(config) {
     }
 
     this.performanceObserver = new PerformanceObserver((list) => {
-        list.getEntries()
-            .filter(entry => !entry.name.match(GOOGLE_ANALYTICS_URL))
+        list.getEntries().filter(entry => !entry.name.match(GOOGLE_ANALYTICS_URL))
             .filter(entry => entry.name.match(performanceFilterRegex))
             .filter(entry => isEmpty(initiatorTypes) || initiatorTypes.includes(entry.initiatorType))
             .forEach((entry) => {
-                sendDownloadTime(this.trackerName, entry, categoryFormatFunction(entry));
-                sendServerWaitingTime(this.trackerName, entry, categoryFormatFunction(entry));
-                sendDurationTime(this.trackerName, entry, categoryFormatFunction(entry));
+                sendDownloadTime(this.trackerName, entry, categoryFormatFunction(entry), labelFormatFunction(entry));
+                sendServerWaitingTime(this.trackerName, entry, categoryFormatFunction(entry), labelFormatFunction(entry));
+                sendDurationTime(this.trackerName, entry, categoryFormatFunction(entry), labelFormatFunction(entry));
             });
     });
 

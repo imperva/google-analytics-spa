@@ -23,8 +23,12 @@ googleAnalyticsInit(GOOGLE_ANALYTICS_ACCOUNT,
         include: /.*reqres.in.*/i,
         initiatorTypes: null,
         category: entry => {
-            return (new URL(entry.name)).pathname.replace('/', '_').toUpperCase();
-        }
+            return `category_${(new URL(entry.name)).pathname.replace('/', '_').toUpperCase()}`;
+        },
+        label: entry => {
+            return `label_${entry.entryType}`;
+        },
+
     },
     {
         userId: TRACKED_USERID,
