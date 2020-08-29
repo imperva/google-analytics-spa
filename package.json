@@ -78,7 +78,6 @@
     "eslint-plugin-react-hooks": "^4.1.0",
     "fibers": "^5.0.0",
     "history": "^4.10.1",
-    "husky": "^4.2.5",
     "jest": "^24.9.0",
     "jest-cli": "^25.5.4",
     "jest-coverage-badges": "^1.1.2",
@@ -88,6 +87,7 @@
     "markdown-magic-jsdoc": "^1.0.1",
     "node-sass": "^4.14.1",
     "peer-deps-externals-webpack-plugin": "^1.0.4",
+    "pre-commit": "^1.2.2",
     "prismjs": "^1.20.0",
     "prop-types": "^15.7.2",
     "random-name": "^0.1.2",
@@ -114,9 +114,7 @@
     "is-empty": "^1.2.0",
     "query-string": "^5.1.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run build:ci"
-    }
-  }
+  "pre-commit": [
+    "build:ci"
+  ]
 }

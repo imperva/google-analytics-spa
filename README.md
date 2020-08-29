@@ -70,7 +70,12 @@ const myTrackerName = 'MyTrackerName';
 // OR it can be an object {include: {regex}, initi: [{string}...{string}], category: {function}}
 //  *          See types here: https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/initiatorType
 
-const performanceRegex = {include: /.*my_api.*/i, initiatorTypes: ['xmlhttprequest','fetch'], category: e => e.name.replace('.','_')};
+const performanceConf = {
+                            include: /.*my_api.*/i, 
+                            initiatorTypes: ['xmlhttprequest','fetch'], 
+                            category: e => `category-${e.name.replace('.','_')}`,
+                            label: e => `label-${e.name.replace('.','_')}`,
+                        };
 
 //every request will also piggyback these dimensions with it
 //For example: user email or any other custom dimension that you need to better track your application usage
@@ -86,14 +91,16 @@ const customDimensions = {
 //GA tracker properties (https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference)
 const properties = { userId: MyUserDetails.id }; //example reporting userId
 
+
 googleAnalyticsInit( myGaApplicationId,
     myTrackerName,
     history,
-    performanceRegex,
+    performanceConf,
     properties,
     customDimensions
 );
 ```
+> [Read about configuration of perofrmance reporting object [here](####PerformanceConfig) ]
 <!-- MARKDOWN-MAGIC:END -->
 
 ***_I decided not to embed the ga.js code, since google promissed to change it unexpectedly_
@@ -289,16 +296,45 @@ Not required by default, if you are using 'history' package
 <a name="PerformanceConfig"></a>
 
 #### PerformanceConfig : <code>Object</code>
-Configuration object used in [googleAnalyticsInit](#googleAnalyticsInit) function
+> Configuration object used in [googleAnalyticsInit](#googleAnalyticsInit) function
 
 **Kind**: global typedef  
 **Version**: 1.1.0  
 **Properties**
 
-- include <code>string</code> - Only requests who's URL match this regex would be reported.  
-- initiatorTypes <code>Array.&lt;string&gt;</code> - Only requests who's type matches this strings would be reported.  
-- category <code>function</code> - The result of this function will be sent as category of timing event  
+Performance config can be an **object** of the following structure:
+ 
+| Key            | Value type | example      | description |
+|:---------------|:-----------|:-------------|:--------------|
+| include        |  regex     | /.*my_api.*/i | only the requests with URL matching regex will be reported. Equal to passing just regex instead of the object |
+| initiatorTypes |    array of strings   |  ['xmlhttprequest','fetch']  | Type of request, [read more](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/initiatorType) |  
+| category       | func       | e => `category-${e.name.replace('.','_')}` | Convert the category reported to GA to whatever string value you need |
+| label          | func       | e => `label-${e.name.replace('.','_')}` | Convert the label reported to GA to whatever string value you need |
 
+Or performance config can be **regex**: only the requests with URL matching regex will be reported
+
+#### Usage example 
+
+##### performance config as regex example: 
+    ```js
+    // only requests that have "my_api" in their URL will be reported to GA
+    const performanceConf = /.*my_api.*/i
+    ```
+
+##### performance config as an object example:
+```js
+    /*
+        report requests with "my_api" in the URLs
+        and only if they were sent as XHR request
+    */
+    const performanceConf = {
+                            include: /.*my_api.*/i, 
+                            initiatorTypes: ['xmlhttprequest','fetch'], 
+                            category: e => `category-${e.name.replace('.','_')}`,
+                            label: e => `label-${e.name.replace('.','_')}`,
+                        };
+```
+    
 
 * * *
 
