@@ -100,7 +100,7 @@ googleAnalyticsInit( myGaApplicationId,
     customDimensions
 );
 ```
-> [Read about configuration of perofrmance reporting object [here](####PerformanceConfig) ]
+> [Read about configuration of [PerformanceConfig](#PerformanceConfig) ]
 <!-- MARKDOWN-MAGIC:END -->
 
 ***_I decided not to embed the ga.js code, since google promissed to change it unexpectedly_
