@@ -1,5 +1,4 @@
 [![downloads per month](https://img.shields.io/npm/dm/@impervaos/google-analytics-spa.svg)](https://www.npmjs.com/package/@impervaos/google-analytics-spa)
-[![node ver](https://img.shields.io/badge/node-8+-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
 [![html5](https://img.shields.io/badge/HTML-5-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
 ![coverage](./badges/badge-lines.svg)
 ![tests](https://github.com/imperva/google-analytics-spa/workflows/tests/badge.svg)
@@ -341,7 +340,11 @@ Or performance config can be **regex**: only the requests with URL matching rege
 
 <!-- MARKDOWN-MAGIC:END -->
 
-## Contributing
+## Contributing 
+[![node ver](https://img.shields.io/badge/node-12+-blue.svg?style=flat)](https://github.com/dwyl/esta/issues)
+
+> Building requires node v12 and higher 
+
 Pull requests are welcome. 
 
 For major changes, please open an issue first to discuss what you would like to change.

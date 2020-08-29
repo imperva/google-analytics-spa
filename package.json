@@ -25,7 +25,7 @@
   ],
   "main": "lib/google-analytics-spa.min.js",
   "engines": {
-    "node": ">=8.15.1"
+    "node": ">=8"
   },
   "scripts": {
     "start": "webpack-dev-server --env.development --inline --hot --progress --colors --config webpack.dev.config.js",
@@ -115,6 +115,7 @@
     "query-string": "^5.1.1"
   },
   "pre-commit": [
-    "build:ci"
+    "build",
+    "test"
   ]
 }
