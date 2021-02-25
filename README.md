@@ -50,6 +50,7 @@ Add the following in your first JSX / JS file (the root of your SPA application)
 <!-- MARKDOWN-MAGIC:START (CODE:src=./src/js/examples/configuration.js) -->
 <!-- The below code snippet is automatically added from ./src/js/examples/configuration.js -->
 ```js
+/* eslint-disable */
 import { googleAnalyticsInit } from '@impervaos/google-analytics-spa';
 import { createBrowserHistory } from 'history';
 
@@ -69,12 +70,7 @@ const myTrackerName = 'MyTrackerName';
 // OR it can be an object {include: {regex}, initi: [{string}...{string}], category: {function}}
 //  *          See types here: https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/initiatorType
 
-const performanceConf = {
-                            include: /.*my_api.*/i, 
-                            initiatorTypes: ['xmlhttprequest','fetch'], 
-                            category: e => `category-${e.name.replace('.','_')}`,
-                            label: e => `label-${e.name.replace('.','_')}`,
-                        };
+const performanceRegex = {include: /.*my_api.*/i, initiatorTypes: ['xmlhttprequest','fetch'], category: e => e.name.replace('.','_')};
 
 //every request will also piggyback these dimensions with it
 //For example: user email or any other custom dimension that you need to better track your application usage
@@ -90,16 +86,14 @@ const customDimensions = {
 //GA tracker properties (https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference)
 const properties = { userId: MyUserDetails.id }; //example reporting userId
 
-
 googleAnalyticsInit( myGaApplicationId,
     myTrackerName,
     history,
-    performanceConf,
+    performanceRegex,
     properties,
     customDimensions
 );
 ```
-> [Read about configuration of [PerformanceConfig](#PerformanceConfig) ]
 <!-- MARKDOWN-MAGIC:END -->
 
 ***_I decided not to embed the ga.js code, since google promissed to change it unexpectedly_
@@ -108,6 +102,7 @@ googleAnalyticsInit( myGaApplicationId,
 <!-- MARKDOWN-MAGIC:START (CODE:src=./src/js/examples/usage.js) -->
 <!-- The below code snippet is automatically added from ./src/js/examples/usage.js -->
 ```js
+/* eslint-disable */
 import { tracker } from '@impervaos/google-analytics-spa';
 
 function myComplicatedAction() {
@@ -165,8 +160,10 @@ store.dispatch(ReduxActions.doSomething());
 
 ## API
 <!-- MARKDOWN-MAGIC:START (JSDOC:files=./src/js/components/google-analytics/GoogleAnalytics.js&module-index-format=none&global-index-format=none&heading-depth=4&separators=true&param-list-format=list) -->
+<a name="reportEvent"></a>
 
-#### tracker().reportEvent
+#### reportEvent
+**Kind**: global instance method of tracker()  
 **Summary**: Reporting an event performed  
 **Access**: public  
 **Params**
@@ -179,7 +176,57 @@ store.dispatch(ReduxActions.doSomething());
 
 * * *
 
-#### tracker().setUserId(identifier)
+<a name="GaTracker"></a>
+
+#### GaTracker
+**Kind**: global class  
+**Access**: public  
+
+* [GaTracker](#GaTracker)
+    * [gaTracker.setCustomDimension](#GaTracker+setCustomDimension)
+    * [gaTracker.setCustomMetric](#GaTracker+setCustomMetric)
+    * [gaTracker.setUserId(identifier)](#GaTracker+setUserId)
+    * [gaTracker.reportLastRequestDuration(category, requestUrl, label)](#GaTracker+reportLastRequestDuration)
+    * [gaTracker.reportLastRequestWait(category, requestUrl, label)](#GaTracker+reportLastRequestWait)
+    * [gaTracker.reportLastRequestDownloadTime(category, requestUrl, label)](#GaTracker+reportLastRequestDownloadTime)
+    * [gaTracker.reportPage(title, page)](#GaTracker+reportPage)
+    * [gaTracker.reportException(exDescription, isFatal)](#GaTracker+reportException)
+
+
+* * *
+
+<a name="GaTracker+setCustomDimension"></a>
+
+############## gaTracker.setCustomDimension
+**Kind**: instance instance method of tracker() of [<code>GaTracker</code>](#GaTracker)  
+**Summary**: sets a custom dimension on the fly. Read more here: https://developers.google.com/analytics/devguides/collection/analyticsjs/custom-dims-mets  
+**Access**: public  
+**Params**
+
+- dimensionId <code>number</code> - integer > 1 - maxMetrics allowed (usually 20)
+- value <code>any</code> - value to be set inside dimension
+
+
+* * *
+
+<a name="GaTracker+setCustomMetric"></a>
+
+############## gaTracker.setCustomMetric
+**Kind**: instance instance method of tracker() of [<code>GaTracker</code>](#GaTracker)  
+**Summary**: sets a custom metric on the fly. Read more here: https://developers.google.com/analytics/devguides/collection/analyticsjs/custom-dims-mets  
+**Access**: public  
+**Params**
+
+- metricId <code>number</code> - integer > 1 - maxMetrics allowed (usually 20)
+- value <code>any</code> - value to be set inside metric
+
+
+* * *
+
+<a name="GaTracker+setUserId"></a>
+
+############## gaTracker.setUserId(identifier)
+**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: (Usually should not be used) Manually set user id (might be overriden by next requests)  
 **Access**: public  
 **Params**
@@ -189,9 +236,12 @@ store.dispatch(ReduxActions.doSomething());
 
 * * *
 
-#### tracker().reportLastRequestDuration(category, requestUrl, label)
+<a name="GaTracker+reportLastRequestDuration"></a>
+
+############## gaTracker.reportLastRequestDuration(category, requestUrl, label)
 Not required by default
 
+**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Manually report the duration of last sent request<br>duration = request initiation until last byte receipt  
 **Access**: public  
 **Params**
@@ -203,9 +253,12 @@ Not required by default
 
 * * *
 
-#### tracker().reportLastRequestWait(category, requestUrl, label)
+<a name="GaTracker+reportLastRequestWait"></a>
+
+############## gaTracker.reportLastRequestWait(category, requestUrl, label)
 Not required by default
 
+**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Reports the server waiting time until download starts  
 **Access**: public  
 **Params**
@@ -217,9 +270,12 @@ Not required by default
 
 * * *
 
-#### tracker().reportLastRequestDownloadTime(category, requestUrl, label)
+<a name="GaTracker+reportLastRequestDownloadTime"></a>
+
+############## gaTracker.reportLastRequestDownloadTime(category, requestUrl, label)
 Not required by default
 
+**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Reports the resource download time  
 **Access**: public  
 **Params**
@@ -231,9 +287,12 @@ Not required by default
 
 * * *
 
-#### tracker().reportPage(title, page)
+<a name="GaTracker+reportPage"></a>
+
+############## gaTracker.reportPage(title, page)
 Not required by default, if you are using 'history' package
 
+**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Access**: public  
 **Params**
 
@@ -243,7 +302,10 @@ Not required by default, if you are using 'history' package
 
 * * *
 
-#### tracker().reportException(exDescription, isFatal)
+<a name="GaTracker+reportException"></a>
+
+############## gaTracker.reportException(exDescription, isFatal)
+**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
 **Summary**: Reporting a code exception to GA  
 **Access**: public  
 **Params**
@@ -295,45 +357,16 @@ Not required by default, if you are using 'history' package
 <a name="PerformanceConfig"></a>
 
 #### PerformanceConfig : <code>Object</code>
-> Configuration object used in [googleAnalyticsInit](#googleAnalyticsInit) function
+Configuration object used in [googleAnalyticsInit](#googleAnalyticsInit) function
 
 **Kind**: global typedef  
 **Version**: 1.1.0  
 **Properties**
 
-Performance config can be an **object** of the following structure:
- 
-| Key            | Value type | example      | description |
-|:---------------|:-----------|:-------------|:--------------|
-| include        |  regex     | /.*my_api.*/i | only the requests with URL matching regex will be reported. Equal to passing just regex instead of the object |
-| initiatorTypes |    array of strings   |  ['xmlhttprequest','fetch']  | Type of request, [read more](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/initiatorType) |  
-| category       | func       | e => `category-${e.name.replace('.','_')}` | Convert the category reported to GA to whatever string value you need |
-| label          | func       | e => `label-${e.name.replace('.','_')}` | Convert the label reported to GA to whatever string value you need |
+- include <code>string</code> - Only requests who's URL match this regex would be reported.  
+- initiatorTypes <code>[ &#x27;Array&#x27; ].&lt;string&gt;</code> - Only requests who's type matches this strings would be reported.  
+- category <code>function</code> - The result of this function will be sent as category of timing event  
 
-Or performance config can be **regex**: only the requests with URL matching regex will be reported
-
-#### Usage example 
-
-##### performance config as regex example: 
-    ```js
-    // only requests that have "my_api" in their URL will be reported to GA
-    const performanceConf = /.*my_api.*/i
-    ```
-
-##### performance config as an object example:
-```js
-    /*
-        report requests with "my_api" in the URLs
-        and only if they were sent as XHR request
-    */
-    const performanceConf = {
-                            include: /.*my_api.*/i, 
-                            initiatorTypes: ['xmlhttprequest','fetch'], 
-                            category: e => `category-${e.name.replace('.','_')}`,
-                            label: e => `label-${e.name.replace('.','_')}`,
-                        };
-```
-    
 
 * * *
 

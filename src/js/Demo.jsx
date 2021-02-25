@@ -119,7 +119,11 @@ const Demo = () => {
                 actionText={'Report event'}
                 text={'Report that something happened in the application'}
                 id="report_action_1"
-                onClick={() => tracker().reportEvent(CATEGORY, 'BUTTON_WAS_CLICKED', 'DEVELOPMENT', 1)}
+                onClick={() => {
+                    tracker().setCustomDimension(1, 'newCustomDim');
+                    tracker().setCustomMetric(1, 'newCustomMetr');
+                    tracker().reportEvent(CATEGORY, 'BUTTON_WAS_CLICKED', 'DEVELOPMENT', 1);
+                }}
                 code={'    /**\n' +
                       '   * Reporting an event in the system\n' +
                       '   * @param {string} category - action category\n' +

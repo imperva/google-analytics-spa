@@ -1,4 +1,6 @@
 export default {
+    FAULTY_CUSTOM_METRIC_ID: 'Metric id supplied was faulty. Metric should be positive integer',
+    FAULTY_CUSTOM_DIMENSION_ID: 'Dimension id supplied was faulty. Dimension should be positive integer',
     NO_HISTORY: 'history dependency was not found. \n' +
                 'Automatic page navigation will not be reported.\n' +
                 'You can still report page navigation using: report().reportPage(my-title, my-path)',
@@ -8,5 +10,6 @@ export default {
     GA_FACTORY_NO_ID_FAILED: 'Google Analytics tracker must receive an id! (pattern: UA-XXXXXX-xx)'
                              + '\nId can be located at your google analytics site: https://analytics.google.com',
     PERF_NOT_SUPPORTED: 'window.performance.getEntriesByName is not supported',
-    measurmentNotFoundError: perfName => `measurement "${perfName}" not found or performance measurement not found`
+    measurmentNotFoundError: perfName => `measurement "${perfName}" not found or performance measurement not found`,
+    packageName: '@impervaos/google-analytics-spa'
 };

@@ -198,6 +198,35 @@ export class GaTracker {
         });
     }
 
+    /**
+     * @public
+     * @kind instance method of tracker()
+     * @summary sets a custom dimension on the fly. Read more here: https://developers.google.com/analytics/devguides/collection/analyticsjs/custom-dims-mets
+     * @param {number} dimensionId - integer > 1 - maxMetrics allowed (usually 20)
+     * @param {any} value - value to be set inside dimension
+     */
+    setCustomDimension(dimensionId, value = '') {
+        if(Number.isInteger(dimensionId) && dimensionId > 0) {
+            ga(`${this.trackerName}.set`, `dimension${dimensionId}`, value);
+        } else {
+            console.warn(`[${Texts.packageName}] ${Texts.FAULTY_CUSTOM_DIMENSION_ID} supplied id = ${dimensionId}`);
+        }
+    }
+
+    /**
+     * @public
+     * @kind instance method of tracker()
+     * @summary sets a custom metric on the fly. Read more here: https://developers.google.com/analytics/devguides/collection/analyticsjs/custom-dims-mets
+     * @param {number} metricId - integer > 1 - maxMetrics allowed (usually 20)
+     * @param {any} value - value to be set inside metric
+     */
+    setCustomMetric(metricId, value = '') {
+        if(Number.isInteger(metricId) && metricId > 0) {
+            ga(`${this.trackerName}.set`, `metric${metricId}`, value);
+        } else {
+            console.warn(`[${Texts.packageName}] ${Texts.FAULTY_CUSTOM_METRIC_ID} supplied id = ${metricId}`);
+        }
+    }
 
     /**
      * @public
