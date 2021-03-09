@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import {tracker} from './GoogleAnalytics';
+import {googleAnalyticsInit, tracker} from './GoogleAnalytics';
 
 //TODO test time to first paint
 //TODO test performance reporting
@@ -26,9 +26,16 @@ describe('performance automatic reporting', function () {
     const CATEGORY_MANUAL = 'CATEGORY_MANUAL';
     const gaSpy = jest.spyOn(global, 'ga');
 
-    afterEach(() => {
-        gaSpy.mockReset();
+    beforeAll(() => {
+        googleAnalyticsInit('123', 'tracker', global.testHistory, /.*/);
     });
+    beforeEach(() => {
+        gaSpy.mockClear();
+    });
+    afterAll(() => {
+        jest.resetAllMocks();
+    });
+
 
     it('manual reporting should report download time of the last call', function () {
         tracker().reportLastRequestDownloadTime(CATEGORY_MANUAL, URL, '');

@@ -1,4 +1,4 @@
-import {tracker} from './GoogleAnalytics';
+import {googleAnalyticsInit} from './GoogleAnalytics';
 import Configs from '../../configs/configurations';
 
 const gaSpy = jest.spyOn(global, 'ga');
@@ -25,28 +25,33 @@ describe('reporting events', function () {
     const ACT = 'ACTION';
     const LBL = 'label';
     const VAL = 0;
-    let _tracker = tracker();
+    let _tracker;
 
-
-    afterEach(() => {
-        gaSpy.mockReset();
+    beforeAll(() => {
+        _tracker = googleAnalyticsInit('123', 'tracker', global.testHistory, null);
+    });
+    beforeEach(() => {
+        gaSpy.mockClear();
+    });
+    afterAll(() => {
+        jest.resetAllMocks();
     });
 
-    it('should validate that ga function is called when reporting action', function () {
+    it('should validate that ga function is called twice when reporting action', function () {
         _tracker.reportAction(CAT, ACT, LBL, VAL);
         validateReportEventResult(gaSpy, CAT, ACT, LBL, VAL);
     });
 
-    it('should validate that ga function is called when reporting event', function () {
+    it('should validate that ga function is called twice when reporting event', function () {
         _tracker.reportEvent(CAT, ACT, LBL, VAL);
         validateReportEventResult(gaSpy, CAT, ACT, LBL, VAL);
     });
 
-    it('should validate that ga function is called when reporting reportHumanAction', function () {
+    it('should validate that ga function is called twice when reporting reportHumanAction', function () {
         _tracker.reportHumanAction(ACT, LBL, VAL);
         validateReportEventResult(gaSpy, Configs.ga.categories.CATEGORY_HUMAN, ACT, LBL, VAL);
     });
-    it('should validate that ga function is called when reporting reportMachineAction', function () {
+    it('should validate that ga function is called twice when reporting reportMachineAction', function () {
         _tracker.reportMachineAction(ACT, LBL, VAL);
         validateReportEventResult(gaSpy, Configs.ga.categories.CATEGORY_MACHINE, ACT, LBL, VAL);
     });

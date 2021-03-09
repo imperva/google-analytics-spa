@@ -3,10 +3,10 @@ import Texts from '../../configs/texts';
 
 const warnSpy = jest.spyOn(console, 'warn');
 const errorSpy = jest.spyOn(console, 'error');
+const gaSpy = jest.spyOn(global, 'ga');
 
 
 describe('Testing setUserId', function () {
-    const gaSpy = jest.spyOn(global, 'ga');
 
     function validateReportEventResult(userId) {
         expect(gaSpy).toHaveBeenCalledTimes(1);
@@ -15,8 +15,14 @@ describe('Testing setUserId', function () {
         expect(gaSpy.mock.calls[0][2]).toEqual(userId);
     }
 
-    afterEach(() => {
-        gaSpy.mockReset();
+    beforeAll(() => {
+        googleAnalyticsInit('123', 'tracker', global.testHistory, null);
+    });
+    beforeEach(() => {
+        gaSpy.mockClear();
+    });
+    afterAll(() => {
+        jest.resetAllMocks();
     });
 
 
@@ -29,9 +35,15 @@ describe('Testing setUserId', function () {
 
 describe('Testing googleAnalyticsInit', function () {
 
-    afterEach(() => {
-        warnSpy.mockReset();
+    beforeEach(() => {
+        warnSpy.mockClear();
+        errorSpy.mockClear();
+        gaSpy.mockClear();
     });
+    afterAll(() => {
+        jest.resetAllMocks();
+    });
+
 
     it('should throw alert when trying to init without history, but still should pass', function () {
         googleAnalyticsInit('UX-xxx','testTracker1', null, /.*/);
@@ -39,14 +51,20 @@ describe('Testing googleAnalyticsInit', function () {
         expect(warnSpy.mock.calls[0][0]).toEqual(Texts.NO_HISTORY);
     });
 
-    it('should print warning when theres no performance lib present', function () {
+    it('should print warning when theres no PerformanceObserver present', function () {
         const perfOrig = PerformanceObserver;
-        delete global.PerformanceObserver;
+        window.PerformanceObserver = undefined;
+        global.PerformanceObserver = undefined;
         googleAnalyticsInit('UX-xxx','testTracker1', global.testHistory, /.*/);
         expect(warnSpy).toHaveBeenCalled();
         expect(warnSpy.mock.calls[0][0]).toEqual(Texts.NO_AUTO_PERFORMANCE);
 
         global.PerformanceObserver = perfOrig;
+    });
+
+    it('should not track performance if null is passed for performanceConfig', function () {
+        const tracker = googleAnalyticsInit('UX-xxx','testTracker1', global.testHistory, null);
+        expect(tracker.performanceObserver).not.toBeDefined();
     });
 
     it('should fail if no tracker id was passed', function () {

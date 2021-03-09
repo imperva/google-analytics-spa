@@ -1,4 +1,4 @@
-import {tracker} from './GoogleAnalytics';
+import {googleAnalyticsInit, tracker} from './GoogleAnalytics';
 
 function getExceptionReportObject(exDescription, exFatal) {
     return {
@@ -21,9 +21,16 @@ describe('reporting exception', function () {
         expect(gaSpy.mock.calls[1][1]).toEqual(getExceptionReportObject(exDescription, exFatal));
     }
 
-    afterEach(() => {
-        gaSpy.mockReset();
+    beforeAll(() => {
+        _tracker = googleAnalyticsInit('123', 'tracker', global.testHistory, null);
     });
+    beforeEach(() => {
+        gaSpy.mockClear();
+    });
+    afterAll(() => {
+        jest.resetAllMocks();
+    });
+
 
     it('should validate that ga function is called when reporting an exception', function () {
         _tracker.reportException(ERROR_DESC, IF_FATAL);

@@ -112,8 +112,7 @@ function bindToRequestsPerformance(config) {
     if (!isEmpty(config)) {
         if (typeof config === 'string' || config instanceof RegExp) {
             performanceFilterRegex = config;
-        }
-        else {
+        } else {
             if (!isEmpty(config.include)) {
                 performanceFilterRegex = config.include;
             }
@@ -206,7 +205,7 @@ export class GaTracker {
      * @param {any} value - value to be set inside dimension
      */
     setCustomDimension(dimensionId, value = '') {
-        if(Number.isInteger(dimensionId) && dimensionId > 0) {
+        if (Number.isInteger(dimensionId) && dimensionId > 0) {
             ga(`${this.trackerName}.set`, `dimension${dimensionId}`, value);
         } else {
             console.warn(`[${Texts.packageName}] ${Texts.FAULTY_CUSTOM_DIMENSION_ID} supplied id = ${dimensionId}`);
@@ -221,7 +220,7 @@ export class GaTracker {
      * @param {any} value - value to be set inside metric
      */
     setCustomMetric(metricId, value = '') {
-        if(Number.isInteger(metricId) && metricId > 0) {
+        if (Number.isInteger(metricId) && metricId > 0) {
             ga(`${this.trackerName}.set`, `metric${metricId}`, value);
         } else {
             console.warn(`[${Texts.packageName}] ${Texts.FAULTY_CUSTOM_METRIC_ID} supplied id = ${metricId}`);
@@ -409,8 +408,11 @@ export class GaTracker {
  * @param {Object} [history] - history object.<br>
  *                  We advice to use https://www.npmjs.com/package/history package.<br>
  *                  If not provided, automatic reporting of pages navigation will not work
- * @param {(PerformanceConfig|string)} [performanceConfig] automatic performance tracking purposes.
- * <br>Can either be regex string that filters urls that should be reported<br>Or an object of type {@link PerformanceConfig}
+ * @param {RegExp | Object | String} [performanceConfig] automatic performance tracking purposes. (default = \/.*\/)
+ *
+ * <br>regex string  - urls to be reported should match this regex
+ * <br>object - type {@link PerformanceConfig}
+ * <br>null - performance reporting is disabled
  * @param {Object} [gaProperties] - list of google analytics field properties
  * <br>https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
  * @param {Object} [gaDimensions] - list of custom dimensions<br>https://support.google.com/analytics/answer/2709829?hl=en
@@ -420,32 +422,32 @@ export class GaTracker {
 export function googleAnalyticsInit(trackerId,
     trackerName,
     history,
-    performanceConfig = null,
+    performanceConfig = /.*/,
     gaProperties = {},
     gaDimensions = {}) {
     try {
-        let isPerformanceObserverDefined = true;
+        let isPerformanceObserverDefined;
         _tracker = new GaTracker(trackerId, trackerName, gaProperties, gaDimensions);
         if (!isEmpty(history)) {
             bindToBrowserHistory.call(_tracker, history);
-        }
-        else {
+        } else {
             console.warn(Texts.NO_HISTORY);
         }
 
+        // This is not a mistake, Since non existing PerformanceObserver will throw an exception we must use try catch
+        // trust me if there was a better way i would use it
         try {
             // eslint-disable-next-line no-unused-vars
             isPerformanceObserverDefined = !!PerformanceObserver;
         } catch (e) {
-            isPerformanceObserverDefined = false;
+            isPerformanceObserverDefined = false; //yes yes i know
         }
 
-        if (isPerformanceObserverDefined) {
+        if (isPerformanceObserverDefined && !isEmpty(performanceConfig)) {
             bindToRequestsPerformance.call(_tracker, performanceConfig);
             bindToFirstPaint.call(_tracker, trackerName);
-        }
-        else {
-            console.warn(Texts.NO_AUTO_PERFORMANCE);
+        } else {
+            !isPerformanceObserverDefined ? console.warn(Texts.NO_AUTO_PERFORMANCE) : console.info(Texts.NO_PERFORMANCE);
         }
 
     } catch (e) {

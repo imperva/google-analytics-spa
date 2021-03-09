@@ -1,4 +1,4 @@
-import {tracker} from './GoogleAnalytics';
+import {googleAnalyticsInit, tracker} from './GoogleAnalytics';
 
 // const REPORTED_TITLE = 0;
 // const REPORTED_PATH = 1;
@@ -24,24 +24,34 @@ function validatePageViewCall(title, path) {
 }
 
 describe('reportPageViews', () => {
-    let _tracker = tracker();
-    const gaReportPageSpy = jest.spyOn(_tracker, 'reportPage');
+    let _tracker;
+    let gaReportPageSpy;
     const PATH = '/some/page';
     const PAGE_TITLE = 'test page';
 
     // its important to reset the mocked responses in the spy function in order to be able to access always to the first call in gaReportPageSpy.mock.calls
-    afterEach(() => {
-        gaSpy.mockReset();
+    beforeAll(() => {
+        _tracker = googleAnalyticsInit('123', 'tracker', global.testHistory, null);
+        gaReportPageSpy = jest.spyOn(_tracker, 'reportPage');
+
     });
+    beforeEach(() => {
+        gaReportPageSpy.mockClear();
+        gaSpy.mockClear();
+    });
+    afterAll(() => {
+        jest.resetAllMocks();
+    });
+
 
     it('should be able to trigger direct pageView call', function () {
         tracker().reportPage(PAGE_TITLE, PATH);
-        validatePageViewCall( PAGE_TITLE, PATH);
+        validatePageViewCall(PAGE_TITLE, PATH);
     });
 
     it('should be report function without a title', function () {
         tracker().reportPage(null, PATH);
-        validatePageViewCall( null, PATH);
+        validatePageViewCall(null, PATH);
     });
 
     it('should report combined path as original when no state is passed on location', () => {
@@ -53,7 +63,7 @@ describe('reportPageViews', () => {
         // expect(gaSpy.mock.calls[0][REPORTED_PATH])
         //     .toEqual('/test/path/');
         //
-        validatePageViewCall(  '', PATH);
+        validatePageViewCall('', PATH);
     });
 
     it('should make sure that page is reported when changing query param', function () {

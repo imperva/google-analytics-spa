@@ -330,8 +330,11 @@ Not required by default, if you are using 'history' package
 - [history] <code>Object</code> - history object.<br>
                  We advice to use https://www.npmjs.com/package/history package.<br>
                  If not provided, automatic reporting of pages navigation will not work
-- [performanceConfig] [<code>PerformanceConfig</code>](#PerformanceConfig) | <code>string</code> - automatic performance tracking purposes.
-<br>Can either be regex string that filters urls that should be reported<br>Or an object of type [PerformanceConfig](#PerformanceConfig)
+- [performanceConfig] <code>RegExp</code> | <code>Object</code> | <code>String</code> - automatic performance tracking purposes. (default = \/.*\/)
+
+<br>regex string  - urls to be reported should match this regex
+<br>object - type [PerformanceConfig](#PerformanceConfig)
+<br>null - performance reporting is disabled
 - [gaProperties] <code>Object</code> - list of google analytics field properties
 <br>https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
 - [gaDimensions] <code>Object</code> - list of custom dimensions<br>https://support.google.com/analytics/answer/2709829?hl=en
