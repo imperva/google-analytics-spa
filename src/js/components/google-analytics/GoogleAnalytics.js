@@ -169,9 +169,10 @@ function bindToBrowserHistory(history) {
  * @public
  */
 export class GaTracker {
-    constructor(trackerId, trackerName, gaProperties = {}, gaDimensions = {}) {
+    constructor(trackerId, trackerName, gaProperties = {}, gaDimensions = {}, isSilent = false) {
         this.lastResource = 0;
         this.lastMeasure = 0;
+        this.isSilent = isSilent;
 
         if (!trackerId) {
             throw new Error(Texts.GA_FACTORY_NO_ID_FAILED);
@@ -208,7 +209,7 @@ export class GaTracker {
         if (Number.isInteger(dimensionId) && dimensionId > 0) {
             ga(`${this.trackerName}.set`, `dimension${dimensionId}`, value);
         } else {
-            console.warn(`[${Texts.packageName}] ${Texts.FAULTY_CUSTOM_DIMENSION_ID} supplied id = ${dimensionId}`);
+            !this.isSilent && console.warn(`[${Texts.packageName}] ${Texts.FAULTY_CUSTOM_DIMENSION_ID} supplied id = ${dimensionId}`);
         }
     }
 
@@ -223,7 +224,7 @@ export class GaTracker {
         if (Number.isInteger(metricId) && metricId > 0) {
             ga(`${this.trackerName}.set`, `metric${metricId}`, value);
         } else {
-            console.warn(`[${Texts.packageName}] ${Texts.FAULTY_CUSTOM_METRIC_ID} supplied id = ${metricId}`);
+            !this.isSilent && console.warn(`[${Texts.packageName}] ${Texts.FAULTY_CUSTOM_METRIC_ID} supplied id = ${metricId}`);
         }
     }
 
@@ -417,6 +418,7 @@ export class GaTracker {
  * <br>https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
  * @param {Object} [gaDimensions] - list of custom dimensions<br>https://support.google.com/analytics/answer/2709829?hl=en
  *
+ * @param isSilent - if true should print warning/error/log messages otherwise not
  * @return {GaTracker} pointer to the singleton object through which reporting is made
  */
 export function googleAnalyticsInit(trackerId,
@@ -424,14 +426,16 @@ export function googleAnalyticsInit(trackerId,
     history,
     performanceConfig = /.*/,
     gaProperties = {},
-    gaDimensions = {}) {
+    gaDimensions = {},
+    isSilent = false) {
+
     try {
         let isPerformanceObserverDefined;
-        _tracker = new GaTracker(trackerId, trackerName, gaProperties, gaDimensions);
+        _tracker = new GaTracker(trackerId, trackerName, gaProperties, gaDimensions, isSilent);
         if (!isEmpty(history)) {
             bindToBrowserHistory.call(_tracker, history);
         } else {
-            console.warn(Texts.NO_HISTORY);
+            !isSilent && console.warn(Texts.NO_HISTORY);
         }
 
         // This is not a mistake, Since non existing PerformanceObserver will throw an exception we must use try catch
@@ -447,7 +451,7 @@ export function googleAnalyticsInit(trackerId,
             bindToRequestsPerformance.call(_tracker, performanceConfig);
             bindToFirstPaint.call(_tracker, trackerName);
         } else {
-            !isPerformanceObserverDefined ? console.warn(Texts.NO_AUTO_PERFORMANCE) : console.info(Texts.NO_PERFORMANCE);
+            !isSilent && (!isPerformanceObserverDefined ? console.warn(Texts.NO_AUTO_PERFORMANCE) : console.info(Texts.NO_PERFORMANCE));
         }
 
     } catch (e) {

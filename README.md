@@ -338,6 +338,7 @@ Not required by default, if you are using 'history' package
 - [gaProperties] <code>Object</code> - list of google analytics field properties
 <br>https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference
 - [gaDimensions] <code>Object</code> - list of custom dimensions<br>https://support.google.com/analytics/answer/2709829?hl=en
+- [isSilent] <code>boolean</code> - if false [default] error / warn / log messages are sent to console
 
 
 * * *
