@@ -238,6 +238,21 @@ store.dispatch(ReduxActions.doSomething());
 
 <a name="GaTracker+reportLastRequestDuration"></a>
 
+############## gaTracker.reportDuration(duration, category, requestUrl, label)
+Not required by default
+
+**Kind**: instance method of [<code>GaTracker</code>](#GaTracker)  
+**Summary**: Manually report the duration of some action for tracking   
+**Access**: public  
+**Params**
+
+- duration <code>number</code> - the number of time units that action took
+- category <code>string</code> - perofmance event category
+- requestUrl <code>string</code> - url of the request we want to report.<br>In case of multiple requests with this url, only the last one will be reported
+- label <code>string</code> - the label of your liking for this request
+
+
+* * *
 ############## gaTracker.reportLastRequestDuration(category, requestUrl, label)
 Not required by default
 

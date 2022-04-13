@@ -44,6 +44,7 @@ function sendDurationTime(trackerName, entry, category = Configs.ga.categories.D
     });
 }
 
+
 /**
  * @ignore
  * Private function that is used to process the time to first paint records and report it to GA
@@ -277,6 +278,19 @@ export class GaTracker {
         if (!isEmpty(entry)) {
             sendDurationTime(this.trackerName, entry, category, label);
         }
+    }
+
+    /**
+     * Not required by default
+     * @public
+     * @summary Manually report the duration of last sent request<br>duration = request initiation until last byte receipt
+     * @param duration - the duration that we measured
+     * @param {string} category - perfomance event category
+     * @param {string} requestUrl - url of the request we want to report.<br>In case of multiple requests with this url, only the last one will be reported
+     * @param {string} label - the label of your liking for this request
+     */
+    reportDuration(duration = 0, category, requestUrl, label) {
+        sendDurationTime(this.trackerName, {duration}, category, label);
     }
 
     /**
