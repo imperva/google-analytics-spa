@@ -49,6 +49,10 @@ describe('performance automatic reporting', function () {
         tracker().reportLastRequestWait(CATEGORY_MANUAL, URL, '');
         validateReportPerformanceResult(gaSpy, 'wait', CATEGORY_MANUAL, '', 10);
     });
+    it('manual duration reporting should report the received time ', function () {
+        tracker().reportDuration(15, CATEGORY_MANUAL, URL, '');
+        validateReportPerformanceResult(gaSpy, 'duration', CATEGORY_MANUAL, '', 15);
+    });
 
     // it('should allow manual report of the last REST request performance', async function () {
     //     const CATEGORY = 'MANUAL';
