@@ -1,6 +1,6 @@
 {
   "name": "@impervaos/google-analytics-spa",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Automatic Google Analytics reporting for your single page application, used with Redux in React, Angular, Vue",
   "keywords": [
     "google",
