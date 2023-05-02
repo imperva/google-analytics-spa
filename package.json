@@ -57,9 +57,6 @@
     "@babel/plugin-transform-runtime": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-react": "^7.10.4",
-    "@fortawesome/fontawesome-svg-core": "^1.2.22",
-    "@fortawesome/free-regular-svg-icons": "^5.10.2",
-    "@fortawesome/react-fontawesome": "^0.1.4",
     "@types/jest": "^24.9.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
@@ -111,8 +108,7 @@
     "whatwg-fetch": "^3.0.0"
   },
   "dependencies": {
-    "is-empty": "^1.2.0",
-    "query-string": "^5.1.1"
+    "is-empty": "^1.2.0"
   },
   "pre-commit": [
     "build",
